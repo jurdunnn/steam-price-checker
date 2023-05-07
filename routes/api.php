@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(SteamController::class)->group(function () {
-    Route::get('/steam/{id}', 'get')->name('steam.get');
+    Route::get('/steam/get/{id}', 'get')->name('steam.get');
+    Route::get('/steam/search/{query}', 'search')->name('steam.search');
 });
