@@ -16,7 +16,7 @@ class SteamService
         $appids = [];
 
         foreach ($games as $game) {
-            if (stripos($game['name'], $query) !== false && (!(sizeof($appids) > $limit))) {
+            if (stripos($game['name'], $query) !== false && (!(sizeof($appids) == $limit))) {
                 $appids[] = $game['appid'];
             }
         }
