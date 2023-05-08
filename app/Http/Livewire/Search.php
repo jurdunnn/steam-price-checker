@@ -46,12 +46,12 @@ class Search extends Component
     private function setGames()
     {
         $appids = $this->steam->search($this->search, 5);
+
         $games = [];
 
         foreach ($appids as $id) {
             $games[] = $this->steam->getSteamGameInfo($id);
         }
-
 
         $games = Arr::flatten($games, 2);
 
