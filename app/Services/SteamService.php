@@ -24,28 +24,7 @@ class SteamService
         return $appids;
     }
 
-    public function getGames(array $appids): array
-    {
-        $limit = 5;
-
-        $appids = array_slice($appids, 0, $limit);
-
-        $games = [];
-
-        foreach ($appids as $id) {
-            $games[] = $this->getSteamGameInfo($id);
-        }
-
-        $games = Arr::flatten($games, 2);
-
-        $games = array_filter($games, function ($game) {
-            return is_array($game);
-        });
-
-        return $games;
-    }
-
-    public function getSteamGameInfo(string $appid): ?Game
+    public function getSteamGame(string $appid): ?Game
     {
         $game = Game::where('steam_app_id', $appid)->first();
 
@@ -55,11 +34,7 @@ class SteamService
         }
 
         // If game does not meet the above criteria fetch details from steam
-        $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
-
-        $reponse = $this->curlUrl($url);
-
-        $data = Arr::flatten(json_decode($reponse, true), 1)[1] ?? null;
+        $data = $this->getGameInfoFromSteam($appid);
 
         if (!$data) {
             return null;
@@ -81,6 +56,15 @@ class SteamService
                 'last_fetched' => now()
             ]);
         }
+    }
+
+    public function getGameInfoFromSteam($appid): ?array
+    {
+        $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
+
+        $reponse = $this->curlUrl($url);
+
+        return Arr::flatten(json_decode($reponse, true), 1)[1] ?? null;
     }
 
     private function curlUrl(string $url): string

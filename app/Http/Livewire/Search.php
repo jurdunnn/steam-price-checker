@@ -50,7 +50,7 @@ class Search extends Component
         $games = [];
 
         foreach ($appids as $id) {
-            $game = $this->steam->getSteamGameInfo($id);
+            $game = $this->steam->getSteamGame($id);
 
             if ($game) {
                 $games[] = $game;
