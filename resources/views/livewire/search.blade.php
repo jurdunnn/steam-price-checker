@@ -21,12 +21,12 @@
                 <div class="absolute top-18 min-h-[4rem] min-w-full">
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         @foreach($games as $game)
-                            <li wire:key="game-{{ $game['steam_appid'] }}" class="flex flex-row px-4 hover:grow-105">
-                                <img src="{{ $game['header_image'] }}" class="object-contain w-48" />
+                            <li wire:key="game-{{ $game->steam_app_id }}" class="flex flex-row px-4 hover:grow-105">
+                                <img src="{{ $game->image }}" class="object-contain w-48" />
 
                                 <div class="flex flex-col justify-between ml-4">
                                     <p class="font-semibold">
-                                        {{ $game['name'] }}
+                                        {{ $game->title }}
                                     </p>
 
                                     <div class="flex flex-row max-w-full text-sm gap-x-1">

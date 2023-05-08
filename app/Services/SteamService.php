@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Game;
 use Illuminate\Support\Arr;
 
 class SteamService
@@ -44,13 +45,42 @@ class SteamService
         return $games;
     }
 
-    public function getSteamGameInfo(string $appid): ?array
+    public function getSteamGameInfo(string $appid): ?Game
     {
+        $game = Game::where('steam_app_id', $appid)->first();
+
+        // If game exists and was fetched recently return game
+        if ($game && $game->last_fetched > now()->addDays(-1)) {
+            return $game;
+        }
+
+        // If game does not meet the above criteria fetch details from steam
         $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
 
         $reponse = $this->curlUrl($url);
 
-        return json_decode($reponse, true);
+        $data = Arr::flatten(json_decode($reponse, true), 1)[1] ?? null;
+
+        if (!$data) {
+            return null;
+        }
+
+        // If game exists, but was fetched longer ago then 1 day, update with new information
+        if ($game) {
+            return $game->update([
+                'steam_app_id' => $data['steam_appid'],
+                'title' => $data['name'],
+                'image' => $data['header_image'],
+                'last_fetched' => now()
+            ]);
+        } else { // If the above criteria is not true, create the game in the db.
+            return Game::create([
+                'steam_app_id' => $data['steam_appid'],
+                'title' => $data['name'],
+                'image' => $data['header_image'],
+                'last_fetched' => now()
+            ]);
+        }
     }
 
     private function curlUrl(string $url): string

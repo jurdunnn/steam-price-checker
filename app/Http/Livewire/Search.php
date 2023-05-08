@@ -50,13 +50,13 @@ class Search extends Component
         $games = [];
 
         foreach ($appids as $id) {
-            $games[] = $this->steam->getSteamGameInfo($id);
+            $game = $this->steam->getSteamGameInfo($id);
+
+            if ($game) {
+                $games[] = $game;
+            }
         }
 
-        $games = Arr::flatten($games, 2);
-
-        $this->games = array_filter($games, function ($game) {
-            return is_array($game);
-        });
+        $this->games = $games;
     }
 }
