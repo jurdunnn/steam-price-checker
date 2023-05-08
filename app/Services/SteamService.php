@@ -4,16 +4,7 @@ namespace App\Services;
 
 class SteamService
 {
-    public function get($appid): array
-    {
-        $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
-
-        $reponse = $this->curlUrl($url);
-
-        return json_decode($reponse);
-    }
-
-    public function search($query): array
+    public function search(string $query): array
     {
         $steamAppsFile = file_get_contents(public_path('steam_apps.json'));
 
@@ -27,10 +18,34 @@ class SteamService
             }
         }
 
-        return $appids;
+        return $this->getGames($appids);
     }
 
-    private function curlUrl($url): string
+    private function getGames(array $appids): array
+    {
+        $limit = 5;
+
+        $appids = array_slice($appids, 0, $limit);
+
+        $games = [];
+
+        foreach ($appids as $id) {
+            $games[] = $this->getSteamGameInfo($id);
+        }
+
+        return $games;
+    }
+
+    private function getSteamGameInfo(string $appid): ?array
+    {
+        $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
+
+        $reponse = $this->curlUrl($url);
+
+        return json_decode($reponse, true);
+    }
+
+    private function curlUrl(string $url): string
     {
         $ch = curl_init();
 
