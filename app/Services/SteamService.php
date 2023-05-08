@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 
 class SteamService
 {
-    public function search(string $query): array
+    public function search(string $query, $limit = null): array
     {
         $steamAppsFile = file_get_contents(public_path('steam_apps.json'));
 
@@ -15,15 +15,15 @@ class SteamService
         $appids = [];
 
         foreach ($games as $game) {
-            if (stripos($game['name'], $query) !== false) {
+            if (stripos($game['name'], $query) !== false && (!(sizeof($appids) > $limit))) {
                 $appids[] = $game['appid'];
             }
         }
 
-        return $this->getGames($appids);
+        return $appids;
     }
 
-    private function getGames(array $appids): array
+    public function getGames(array $appids): array
     {
         $limit = 5;
 

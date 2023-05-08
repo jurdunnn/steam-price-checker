@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Services\SteamService;
+use Illuminate\Support\Arr;
 use Livewire\Component;
 
 class Search extends Component
@@ -44,6 +45,18 @@ class Search extends Component
 
     private function setGames()
     {
-        $this->games = $this->steam->search($this->search);
+        $appids = $this->steam->search($this->search, 5);
+        $games = [];
+
+        foreach ($appids as $id) {
+            $games[] = $this->steam->getSteamGameInfo($id);
+        }
+
+
+        $games = Arr::flatten($games, 2);
+
+        $this->games = array_filter($games, function ($game) {
+            return is_array($game);
+        });
     }
 }
