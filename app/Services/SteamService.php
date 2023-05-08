@@ -13,15 +13,9 @@ class SteamService
 
         $games = json_decode($steamAppsFile, true)['applist']['apps'];
 
-        $appids = [];
+        $bestMatches =  $this->find_best_matches($games, $query, $limit);
 
-        foreach ($games as $game) {
-            if (stripos($game['name'], $query) !== false && (!(sizeof($appids) == $limit))) {
-                $appids[] = $game['appid'];
-            }
-        }
-
-        return $appids;
+        return $bestMatches;
     }
 
     public function getSteamGame(string $appid): ?Game
@@ -80,5 +74,34 @@ class SteamService
         curl_close($ch);
 
         return $reponse;
+    }
+
+    private function find_best_matches(array $data, string $query, int $limit = 5): array
+    {
+        $matches = [];
+        $query = strtolower($query);
+
+        foreach ($data as $game) {
+            $name = strtolower($game['name']);
+
+            // How many edits it will take to transform the query to match the name
+            $distance = levenshtein($name, $query);
+
+            $matches[] = [
+                'game' => $game,
+                'distance' => $distance,
+            ];
+        }
+
+        // Sort matches with the lost distance toward the beginning of the array
+        usort($matches, function ($a, $b) {
+            return $a['distance'] <=> $b['distance'];
+        });
+
+        $matches = array_slice($matches, 0, $limit);
+
+        return array_map(function ($match) {
+            return $match['game']['appid'];
+        }, $matches);
     }
 }
