@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
+
 class SteamService
 {
     public function search(string $query): array
@@ -33,10 +35,16 @@ class SteamService
             $games[] = $this->getSteamGameInfo($id);
         }
 
+        $games = Arr::flatten($games, 2);
+
+        $games = array_filter($games, function ($game) {
+            return is_array($game);
+        });
+
         return $games;
     }
 
-    private function getSteamGameInfo(string $appid): ?array
+    public function getSteamGameInfo(string $appid): ?array
     {
         $url = "https://store.steampowered.com/api/appdetails?appids=$appid";
 

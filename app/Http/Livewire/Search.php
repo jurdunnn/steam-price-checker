@@ -7,19 +7,43 @@ use Livewire\Component;
 
 class Search extends Component
 {
-    public $search;
+    public string $search;
+
+    public array $games;
+
+    private SteamService $steam;
+
+    public function booted()
+    {
+        $this->steam = new SteamService;
+    }
+
+    public function mount()
+    {
+        $this->search = '';
+
+        $this->games = [];
+    }
 
     public function render()
     {
         return view('livewire.search');
     }
 
-    public function updated()
+    public function updatingSearch()
     {
-        $steam = new SteamService();
+        $this->games = [];
+    }
 
-        $reponse = $steam->search($this->search);
+    public function updatedSearch($value)
+    {
+        $this->setGames();
 
-        dd($reponse);
+        $this->search = $value;
+    }
+
+    private function setGames()
+    {
+        $this->games = $this->steam->search($this->search);
     }
 }
