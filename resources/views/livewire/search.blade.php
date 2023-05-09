@@ -17,7 +17,7 @@
                     wire:model.debounce.500ms="search"/>
             </div>
 
-            @if ($games)
+            @if (sizeof($games) > 1)
                 <div class="absolute top-18 min-h-[4rem] min-w-full">
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         @foreach($games as $game)

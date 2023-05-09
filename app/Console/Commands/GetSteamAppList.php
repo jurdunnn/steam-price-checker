@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Game;
 use Illuminate\Console\Command;
 
 class GetSteamAppList extends Command
@@ -32,6 +33,19 @@ class GetSteamAppList extends Command
         $url = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=$key&format=json";
 
         $reponse = file_get_contents($url);
+
+        $games = json_decode($reponse, true)['applist']['apps'];
+
+        foreach ($games as $game) {
+            $this->info("Creating {$game['name']}");
+
+            if (!Game::where('steam_app_id', $game['appid'])->exists()) {
+                Game::create([
+                    'steam_app_id' => $game['appid'],
+                    'title' => $game['name'],
+                ]);
+            }
+        }
 
         file_put_contents($file, $reponse);
     }

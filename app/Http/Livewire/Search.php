@@ -2,15 +2,17 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Game;
 use App\Services\SteamService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class Search extends Component
 {
     public string $search;
 
-    public array $games;
+    public Collection $games;
 
     private SteamService $steam;
 
@@ -23,7 +25,7 @@ class Search extends Component
     {
         $this->search = '';
 
-        $this->games = [];
+        $this->games = collect();
     }
 
     public function render()
@@ -33,30 +35,15 @@ class Search extends Component
 
     public function updatingSearch()
     {
-        $this->games = [];
+        $this->games = collect();
     }
 
-    public function updatedSearch($value)
+    public function updatedSearch()
     {
-        $this->setGames();
+        $search = trim($this->search);
 
-        $this->search = $value;
-    }
-
-    private function setGames()
-    {
-        $appids = $this->steam->search($this->search, 5);
-
-        $games = [];
-
-        foreach ($appids as $id) {
-            $game = $this->steam->getSteamGame($id);
-
-            if ($game) {
-                $games[] = $game;
-            }
-        }
-
-        $this->games = $games;
+        $this->games = Game::where('title', 'LIKE', "%{$search}%")
+            ->limit(5)
+            ->get();
     }
 }

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('games', function (Blueprint $table) {
-            $table->id();
-            $table->string('steam_app_id')->index();
-            $table->string('title');
-            $table->longText('image')->nullable();
-            $table->timestamps();
+        Schema::table('games', function (Blueprint $table) {
+            $table->dropColumn('image');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('games');
+        Schema::table('games', function (Blueprint $table) {
+            $table->longText('image')->nullable();
+        });
     }
 };
