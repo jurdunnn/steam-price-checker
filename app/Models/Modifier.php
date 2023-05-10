@@ -9,6 +9,8 @@ class Modifier extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function games()
     {
         return $this->morphedByMany(Game::class, 'modifiable');

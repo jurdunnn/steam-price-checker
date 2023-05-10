@@ -17,6 +17,23 @@ class Game extends Model
         'title',
     ];
 
+    protected static function booted()
+    {
+        static::retrieved(function ($game) {
+            $steam = new SteamService;
+
+            $data = $steam->getGameInfoFromSteam($game->steam_app_id);
+
+            // Delete game if no data was retrieved;
+            if (!$data) {
+                $game->delete();
+            }
+
+            $game->addImageIfMissing($data['header_image']);
+            $game->addPlatformModifier($data['platforms']);
+        });
+    }
+
     public function image(): HasOne
     {
         return $this->hasOne(GameImage::class);
@@ -27,14 +44,47 @@ class Game extends Model
         return $this->morphToMany(Modifier::class, 'modifiable');
     }
 
-    public function getImageAttribute()
+    public function getImageAttribute(): ?string
     {
-        if (!GameImage::where('game_id', $this->id)->exists()) {
-            $steam = new SteamService;
+        return $this->image()->first()->image_url;
+    }
 
-            $steam->createImageForGame(game: $this);
+    private function addImageIfMissing(string $image): void
+    {
+        if (!$this->image()->exists()) {
+            $this->image()->create([
+                'game_id' => $this->id,
+                'image_url' => $image,
+            ]);
         }
+    }
 
-        return $this->image()->first()->image_url ?? null;
+    private function addPlatformModifier(array $platforms)
+    {
+        $platforms = array_filter($platforms, fn ($platform) => $platform != false);
+
+        switch (sizeof($platforms)) {
+            case 1:
+                $this->modifiers()->firstOrCreate([
+                    'title' => 'No many support platforms',
+                    'color' => 'red',
+                    'strength' => -10
+                ]);
+                break;
+            case 2:
+                $this->modifiers()->firstOrCreate([
+                    'title' => 'An acceptable number of platforms',
+                    'color' => 'gray',
+                    'strength' => 0
+                ]);
+                break;
+            case 3:
+                $this->modifiers()->firstOrCreate([
+                    'title' => 'No many support platforms',
+                    'color' => 'green',
+                    'strength' => 10
+                ]);
+                break;
+        }
     }
 }
