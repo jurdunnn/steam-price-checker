@@ -66,7 +66,7 @@ class Game extends Model
         switch (sizeof($platforms)) {
             case 1:
                 $this->modifiers()->firstOrCreate([
-                    'title' => 'No many support platforms',
+                    'title' => 'Not many support platforms',
                     'color' => 'red',
                     'strength' => -10
                 ]);
@@ -80,7 +80,7 @@ class Game extends Model
                 break;
             case 3:
                 $this->modifiers()->firstOrCreate([
-                    'title' => 'No many support platforms',
+                    'title' => 'Supports many platforms',
                     'color' => 'green',
                     'strength' => 10
                 ]);
