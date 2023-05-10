@@ -21,29 +21,31 @@
                 <div class="absolute top-18 min-h-[4rem] min-w-full">
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         @foreach($games as $game)
-                            <li wire:key="game-{{ $game->steam_app_id }}" class="flex flex-row px-4 hover:grow-105">
-                                <img src="{{ $game->image }}" class="object-contain w-48" />
+                            @if ($game->image)
+                                <li wire:key="game-{{ $game->steam_app_id }}" class="flex flex-row px-4 hover:grow-105">
+                                    <img src="{{ $game->image }}" class="object-contain w-48" />
 
-                                <div class="flex flex-col justify-between ml-4">
-                                    <p class="font-semibold">
-                                        {{ $game->title }}
-                                    </p>
-
-                                    <div class="flex flex-row max-w-full text-sm gap-x-1">
-                                        <p class="px-2 py-1 bg-green-600 rounded-xl">
-                                            High frequency of content updates
+                                    <div class="flex flex-col justify-between ml-4">
+                                        <p class="font-semibold">
+                                            {{ $game->title }}
                                         </p>
 
-                                        <p class="px-2 py-1 bg-gray-400 rounded-xl">
-                                            Average reviews
-                                        </p>
+                                        <div class="flex flex-row max-w-full text-sm gap-x-1">
+                                            <p class="px-2 py-1 bg-green-600 rounded-xl">
+                                                High frequency of content updates
+                                            </p>
 
-                                        <p class="px-2 py-1 bg-red-400 rounded-xl">
-                                            Overpriced
-                                        </p>
+                                            <p class="px-2 py-1 bg-gray-400 rounded-xl">
+                                                Average reviews
+                                            </p>
+
+                                            <p class="px-2 py-1 bg-red-400 rounded-xl">
+                                                Overpriced
+                                            </p>
+                                        </div>
                                     </div>
-                                <div>
-                            </li>
+                                </li>
+                            @endif
                         @endforeach
                     </ul>
                 </div>
