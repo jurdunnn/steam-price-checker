@@ -6,6 +6,7 @@ use App\Services\SteamService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Game extends Model
 {
@@ -19,6 +20,11 @@ class Game extends Model
     public function image(): HasOne
     {
         return $this->hasOne(GameImage::class);
+    }
+
+    public function modifiers(): MorphToMany
+    {
+        return $this->morphToMany(Modifier::class, 'modifiable');
     }
 
     public function getImageAttribute()

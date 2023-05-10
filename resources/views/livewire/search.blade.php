@@ -22,7 +22,7 @@
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         @foreach($games as $game)
                             @if ($game->image)
-                                <li wire:key="game-{{ $game->steam_app_id }}" class="flex flex-row px-4 hover:grow-105">
+                                <li wire:key="game-{{ $game->steam_app_id }}" class="flex flex-row px-4 hover:grow-110">
                                     <img src="{{ $game->image }}" class="object-contain w-48" />
 
                                     <div class="flex flex-col justify-between ml-4">
