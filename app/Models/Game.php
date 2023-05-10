@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ModifierType;
 use App\Services\SteamService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -59,14 +60,22 @@ class Game extends Model
         }
     }
 
-    private function addPlatformModifier(array $platforms)
+    private function addPlatformModifier(array $platforms): void
     {
+        if ($this->modifiers()
+            ->where('type', ModifierType::PLATFORM)
+            ->exists()
+        ) {
+            return;
+        }
+
         $platforms = array_filter($platforms, fn ($platform) => $platform != false);
 
         switch (sizeof($platforms)) {
             case 1:
                 $this->modifiers()->firstOrCreate([
                     'title' => 'Not many support platforms',
+                    'type' => ModifierType::PLATFORM,
                     'color' => 'red',
                     'strength' => -10
                 ]);
@@ -74,6 +83,7 @@ class Game extends Model
             case 2:
                 $this->modifiers()->firstOrCreate([
                     'title' => 'An acceptable number of platforms',
+                    'type' => ModifierType::PLATFORM,
                     'color' => 'gray',
                     'strength' => 0
                 ]);
@@ -81,6 +91,7 @@ class Game extends Model
             case 3:
                 $this->modifiers()->firstOrCreate([
                     'title' => 'Supports many platforms',
+                    'type' => ModifierType::PLATFORM,
                     'color' => 'green',
                     'strength' => 10
                 ]);
