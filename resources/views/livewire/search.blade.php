@@ -31,17 +31,11 @@
                                         </p>
 
                                         <div class="flex flex-row max-w-full text-sm gap-x-1">
-                                            <p class="px-2 py-1 bg-green-600 rounded-xl">
-                                                High frequency of content updates
-                                            </p>
-
-                                            <p class="px-2 py-1 bg-gray-400 rounded-xl">
-                                                Average reviews
-                                            </p>
-
-                                            <p class="px-2 py-1 bg-red-400 rounded-xl">
-                                                Overpriced
-                                            </p>
+                                            @foreach($game->modifiers as $modifier)
+                                                <p class="px-2 py-1 bg-{{ $modifier->color }}-600 rounded-xl">
+                                                    {{ $modifier->title }}
+                                                </p>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </li>
