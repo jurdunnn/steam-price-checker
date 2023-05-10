@@ -3,9 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Models\Game;
-use App\Services\SteamService;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Search extends Component
@@ -13,13 +12,6 @@ class Search extends Component
     public string $search;
 
     public Collection $games;
-
-    private SteamService $steam;
-
-    public function booted()
-    {
-        $this->steam = new SteamService;
-    }
 
     public function mount()
     {
@@ -42,8 +34,14 @@ class Search extends Component
     {
         $search = trim($this->search);
 
-        $this->games = Game::where('title', 'LIKE', "%{$search}%")
+        $this->games = Game::select(DB::raw('*, CASE WHEN title = "' . $search . '" THEN 0 ELSE 1 END as priority'))
+            ->where('title', 'LIKE', '%' . $search . '%')
+            ->orderByRaw('priority ASC')
             ->limit(5)
             ->get();
+
+        if (empty($this->search)) {
+            $this->games = collect();
+        }
     }
 }

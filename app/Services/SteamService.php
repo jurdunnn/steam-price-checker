@@ -16,7 +16,7 @@ class SteamService
         return Arr::flatten(json_decode($reponse, true), 1)[1] ?? null;
     }
 
-    public function getGameImageFromSteam(Game $game): void
+    public function createImageForGame(Game $game): void
     {
         $info = $this->getGameInfoFromSteam($game->steam_app_id);
 
@@ -25,7 +25,13 @@ class SteamService
                 'game_id' => $game->id,
                 'image_url' => $info['header_image'],
             ]);
+
+            return;
         }
+
+        // If game information was not retrieved
+        // delete game from database
+        $game->delete();
     }
 
     private function curlUrl(string $url): string

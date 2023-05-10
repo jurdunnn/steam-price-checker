@@ -14,7 +14,6 @@ class Game extends Model
     protected $fillable = [
         'steam_app_id',
         'title',
-        'image'
     ];
 
     public function image(): HasOne
@@ -27,7 +26,7 @@ class Game extends Model
         if (!GameImage::where('game_id', $this->id)->exists()) {
             $steam = new SteamService;
 
-            $steam->getGameImageFromSteam($this);
+            $steam->createImageForGame(game: $this);
         }
 
         return $this->image()->first()->image_url ?? null;
