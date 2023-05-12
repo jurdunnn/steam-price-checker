@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\SteamController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(SteamController::class)->group(function () {
-    Route::get('/steam/get/{id}', 'get')->name('steam.get');
+Route::controller(SearchController::class)->group(function () {
     Route::get('/steam/search/{query}', 'search')->name('steam.search');
+    Route::get('/steam/search/get/{id}', 'get')->name('steam.get');
 });

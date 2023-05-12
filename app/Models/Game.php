@@ -21,17 +21,22 @@ class Game extends Model
     protected static function booted()
     {
         static::retrieved(function ($game) {
-            $steam = new SteamService;
+            if (
+                !$game->image()->first()
+                || !$game->modifiers->where('type', ModifierType::PLATFORM)->count()
+            ) {
+                $steam = new SteamService;
 
-            $data = $steam->getGameInfoFromSteam($game->steam_app_id);
+                $data = $steam->getGameInfoFromSteam($game->steam_app_id);
 
-            // Delete game if no data was retrieved;
-            if (!$data) {
-                $game->delete();
+                // Delete game if no data was retrieved;
+                if (!$data) {
+                    $game->delete();
+                }
+
+                $game->addImageIfMissing($data['header_image']);
+                $game->addPlatformModifier($data['platforms']);
             }
-
-            $game->addImageIfMissing($data['header_image']);
-            $game->addPlatformModifier($data['platforms']);
         });
     }
 
@@ -47,7 +52,7 @@ class Game extends Model
 
     public function getImageAttribute(): ?string
     {
-        return $this->image()->first()->image_url;
+        return $this->image()->first()->image_url ?? null;
     }
 
     private function addImageIfMissing(string $image): void

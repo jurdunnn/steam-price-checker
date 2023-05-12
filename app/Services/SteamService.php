@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Game;
 use Illuminate\Support\Arr;
 
 class SteamService
