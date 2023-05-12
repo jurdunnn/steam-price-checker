@@ -21,12 +21,45 @@
 
                 <div x-show="games.length > 0" class="absolute bottom-18 min-h-[4rem] min-w-full">
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
-                        <template x-for="game in games">
-                            <li :key="game.steam_app_id" class="flex flex-row px-4 hover:grow-110">
+                        <template x-for="game in games" :key="game.steam_app_id">
+                            <li class="flex flex-row px-4 hover:grow-110">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
 
                                 <div class="flex flex-col justify-between ml-4">
                                     <p x-show="game.title != null" class="font-semibold" x-text="game.title"></p>
+
+                                    <!--
+                                        Unfortunately an alpinejs bug occurred here, preventing a loop from being possible.
+
+                                        Though annoying, it's not massively a problem, as the output below would have needed
+                                        to be limited to ~3 modifiers anyway.
+                                    -->
+                                    <div x-show="game.modifiers.length > 0" class="flex flex-row max-w-full text-sm gap-x-1">
+                                        <template x-if="game.modifiers.length == 1">
+                                            <p
+                                                class="px-2 py-1 rounded-xl"
+                                                :class="`bg-${game.modifiers[0].color}-600`"
+                                                x-text="game.modifiers[0].title"
+                                            ></p>
+                                        </template>
+
+                                        <template x-if="game.modifiers.length == 2">
+                                            <p
+                                                class="px-2 py-1 rounded-xl"
+                                                :class="`bg-${game.modifiers[1].color}-600`"
+                                                x-text="game.modifiers[1].title"
+                                            ></p>
+                                        </template>
+
+                                        <template x-if="game.modifiers.length == 3">
+                                            <p
+                                                x-show="game.modifiers == 3"
+                                                class="px-2 py-1 rounded-xl"
+                                                :class="`bg-${game.modifiers[2].color}-600`"
+                                                x-text="game.modifiers[2].title"
+                                            ></p>
+                                        </template>
+                                    </div>
                                 </div>
                             </li>
                         </template>
@@ -43,7 +76,12 @@
                 games: [],
 
                 init() {
-                    this.$watch('search', () => this.getGames());
+                    this.$watch('search', () => {
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => {
+                            this.getGames();
+                        }, 500);
+                    });
                 },
 
                 async getGames() {
