@@ -48,21 +48,26 @@
 
                 async getGames() {
                     if (this.search.length > 0) {
-                        this.games = [];
                         try {
                             const response = await fetch(`/api/steam/search/${this.search}`);
-
                             const games = await response.json();
 
-                            console.log(games);
+                            // Remove games from this.games if they are already present in the newly fetched games
+                            this.games = this.games.filter((game) => !games.some((g) => g.id === game.id));
 
-                            games.forEach(async (game) => {
+                            // Add new games to games array (up to a maximum length of 5)
+                            for (const game of games) {
+
                                 const response = await fetch(`/api/steam/search/get/${game.id}`);
-
                                 const item = await response.json();
 
+                                // Shift first game to make room for more
+                                if (this.games.length >= 5) {
+                                    this.games.shift(item);
+                                }
+
                                 this.games.push(item);
-                            });
+                            }
                         } catch (error) {
                             console.error(error);
                             return [];
