@@ -13,6 +13,7 @@ class SearchController extends Controller
 
         return Game::select(DB::raw('id, title, CASE WHEN title = "' . $search . '" THEN 0 ELSE 1 END as priority'))
             ->where('title', 'LIKE', '%' . $search . '%')
+            ->orderByRaw('priority ASC')
             ->limit(5)
             ->get();
     }
@@ -21,6 +22,7 @@ class SearchController extends Controller
     {
         return Game::where('id', $id)
             ->with('image')
+            ->with('modifiers')
             ->first();
     }
 }
