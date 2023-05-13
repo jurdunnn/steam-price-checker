@@ -131,8 +131,6 @@
                                 }
 
                                 this.loadProgress = this.loadProgress + (100 / games.length);
-                                console.log("Games Length: " + games.length);
-                                console.log(this.loadProgress);
 
                                 this.games.push(item);
 
