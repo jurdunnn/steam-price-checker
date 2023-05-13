@@ -1,7 +1,7 @@
 <x-app-layout>
     <div
         x-data="data"
-        class="relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center bg-dots-darker dark:bg-gray-900 selection:bg-red-500 selection:text-white"
+        class="relative min-h-screen bg-gray-900 bg-center sm:flex sm:justify-center selection:bg-blue-500 selection:text-white"
     >
         <div class="absolute top-0 w-full h-[.2vh]">
             <div class="loading h-full bg-blue-600 w-[0%]">
@@ -27,7 +27,7 @@
                 <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
                     <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         <template x-for="game in games" :key="game.steam_app_id">
-                            <li class="flex flex-row flex-grow px-4 overflow-hidden" :id="`game${game.id}`" style="opacity: 0">
+                            <li class="flex flex-row flex-grow px-4 overflow-hidden max-h-28" :id="`game${game.id}`" style="opacity: 0">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
 
                                 <div class="flex flex-col justify-between py-2 ml-4">
@@ -72,13 +72,63 @@
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- Sidebar show button -->
+        <div x-on:click="showSettings" class="absolute cursor-pointer flex items-center group right-0 top-0 w-12 h-[100vh] hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-600 duration-150 ease-in opacity-25 hover:opacity-75">
+            <span class="mx-auto text-white group-hover:scale-110">
+                <i class="fa-solid fa-chevron-left fa-xl"></i>
+            </span>
+        </div>
+
+        <!-- Settings Sidebar -->
+        <div x-show="showSidebar" id="sidebar" class="absolute right-0 flex flex-col gap-y-12 top-0 w-0 h-[100vh] bg-gray-700 text-white">
+            <button x-on:click="hideSettings" class="p-2 mr-auto hover:scale-105">
+                <i class="fa-solid fa-square-xmark fa-2xl"></i>
+            </button>
+
+            <h1 class="mx-auto text-2xl font-bold -my-6">Settings</h1>
+
+            <div class="flex flex-col gap-y-6">
+                <div class="flex flex-col px-6 mr-auto gap-y-1">
+                    <h2 class="text-xl font-bold">Downloadable Content (DLC)</h2>
+                    <div class="flex gap-x-4">
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col px-6 mr-auto">
+                    <h2 class="text-xl font-bold">Videos and Trailers</h2>
+                    <div class="flex gap-x-4">
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col px-6 mr-auto">
+                    <h2 class="text-xl font-bold">Unreleased Games</h2>
+                    <div class="flex gap-x-4">
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col px-6 mr-auto">
+                    <h2 class="text-xl font-bold">Free Games</h2>
+                    <div class="flex gap-x-4">
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('data', () => ({
                 search: '',
                 loadProgress: 0,
+                showSidebar: false,
                 showResults: false,
                 games: [],
 
@@ -106,7 +156,6 @@
                                 }).then(() => {
                                     this.showResults = false;
                                 });
-
                             }
                         }, 500);
                     });
@@ -133,32 +182,46 @@
                     });
                 },
 
+                showSettings() {
+                    this.showSidebar = true;
+
+                    gsap.fromTo("#sidebar", { width: "0%" }, {
+                        width: "20%",
+                        duration: 1,
+                        ease: "elastic.out(1, 0.6)"
+                    });
+                },
+
+                hideSettings() {
+                    gsap.fromTo("#sidebar", { width: "20%" }, {
+                        width: "0%",
+                        duration: .25,
+                    }).then(() => {
+                        this.showSidebar = false;
+                    });
+                },
+
                 async getGames() {
                     if (this.search.length > 0) {
                         this.loadProgress = 0;
+
+                        this.games = [];
 
                         try {
                             const response = await fetch(`/api/steam/search/${this.search}`);
                             const games = await response.json();
 
-                            // Remove games from this.games if they are already present in the newly fetched games
-                            this.games = this.games.filter((game) => !games.some((g) => g.id === game.id));
-
-                            // Remove games which do not match search to search.
-                            this.games = this.games.filter((game) => game.title.includes(this.search));
+                            var gamesLength = games.length;
 
                             // Add new games to games array (up to a maximum length of 5)
                             for (const game of games) {
+                                const response = await fetch(`/api/steam/search/get/${game.id}`).catch((error) => {
+                                    gamesLength--;
+                                });
 
-                                const response = await fetch(`/api/steam/search/get/${game.id}`);
                                 const item = await response.json();
 
-                                // Shift first game to make room for more
-                                if (this.games.length >= 5) {
-                                    this.games.shift(item);
-                                }
-
-                                this.loadProgress = this.loadProgress + (100 / games.length);
+                                this.loadProgress += 100 / gamesLength;
 
                                 this.games.push(item);
 
