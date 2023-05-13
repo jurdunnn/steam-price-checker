@@ -81,7 +81,7 @@
         </div>
 
         <!-- Settings Sidebar -->
-        <div x-show="showSidebar" id="sidebar" class="absolute right-0 flex flex-col gap-y-12 top-0 w-0 h-[100vh] bg-gray-700 text-white">
+        <div x-show="showSidebar" id="sidebar" class="absolute shadow-xl right-0 flex flex-col gap-y-12 top-0 w-0 h-[100vh] bg-gray-700 text-white">
             <button x-on:click="hideSettings" class="p-2 mr-auto hover:scale-105">
                 <i class="fa-solid fa-square-xmark fa-2xl"></i>
             </button>
@@ -92,32 +92,32 @@
                 <div class="flex flex-col px-6 mr-auto gap-y-1">
                     <h2 class="text-xl font-bold">Downloadable Content (DLC)</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.dlc = true" :class="settings.dlc ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg" x-on:click="settings.dlc = false" :class="!settings.dlc ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
                     </div>
                 </div>
 
                 <div class="flex flex-col px-6 mr-auto">
                     <h2 class="text-xl font-bold">Videos and Trailers</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.videos = true" :class="settings.videos ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105" x-on:click="settings.videos = false" :class="!settings.videos ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
                     </div>
                 </div>
 
                 <div class="flex flex-col px-6 mr-auto">
                     <h2 class="text-xl font-bold">Unreleased Games</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.unreleased = true" :class="settings.unreleased ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg" x-on:click="settings.unreleased = false" :class="!settings.unreleased ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
                     </div>
                 </div>
 
                 <div class="flex flex-col px-6 mr-auto">
                     <h2 class="text-xl font-bold">Free Games</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg duration-150 ease-in hover:scale-105">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.free = true" :class="settings.free ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg" x-on:click="settings.free = false" :class="!settings.free ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
                     </div>
                 </div>
             </div>
@@ -129,6 +129,12 @@
                 search: '',
                 loadProgress: 0,
                 showSidebar: false,
+                settings: {
+                    dlc: true,
+                    videos: true,
+                    unreleased: true,
+                    free: true,
+                },
                 showResults: false,
                 games: [],
 
