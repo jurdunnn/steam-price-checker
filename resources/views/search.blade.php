@@ -74,7 +74,7 @@
         </div>
 
         <!-- Sidebar show button -->
-        <div x-on:click="showSettings" class="absolute cursor-pointer flex items-center group right-0 top-0 w-12 h-[100vh] hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-600 duration-150 ease-in opacity-25 hover:opacity-75">
+        <div x-on:click="showSettings" class="absolute cursor-pointer flex items-center group right-0 top-0 w-12 h-[100vh] hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-600 duration-300 ease-in-out opacity-25 hover:opacity-75">
             <span class="mx-auto text-white group-hover:scale-110">
                 <i class="fa-solid fa-chevron-left fa-xl"></i>
             </span>
