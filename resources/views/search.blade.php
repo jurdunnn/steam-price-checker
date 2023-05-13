@@ -100,8 +100,8 @@
                 <div class="flex flex-col px-6 mr-auto">
                     <h2 class="text-xl font-bold">Videos and Trailers</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.videos = true" :class="settings.videos ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105" x-on:click="settings.videos = false" :class="!settings.videos ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.video = true" :class="settings.video ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105" x-on:click="settings.video = false" :class="!settings.video ? 'opacity-25' : 'duration-150 ease-in hover:scale-105'">Hide</button>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@
                 showSidebar: false,
                 settings: {
                     dlc: true,
-                    videos: true,
+                    video: true,
                     unreleased: true,
                     free: true,
                 },
@@ -221,7 +221,9 @@
 
                             // Add new games to games array (up to a maximum length of 5)
                             for (const game of games) {
-                                const response = await fetch(`/api/steam/search/get/${game.id}`).catch((error) => {
+                                const optionsString = JSON.stringify(this.settings);
+
+                                const response = await fetch(`/api/steam/search/get/${game.id}?options=${encodeURIComponent(optionsString)}`).catch((error) => {
                                     gamesLength--;
                                 });
 

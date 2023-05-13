@@ -21,9 +21,17 @@ class Game extends Model
     protected static function booted()
     {
         static::retrieved(function ($game) {
+            if (!$game->metas()->first()) {
+                $game->metas()->create();
+            }
+
             if (
                 !$game->image()->first()
                 || !$game->modifiers->where('type', ModifierType::PLATFORM)->count()
+                || $game->metas->dlc == null
+                || $game->metas->video == null
+                || $game->metas->unreleased == null
+                || $game->metas->free == null
             ) {
                 $steam = new SteamService;
 
@@ -34,6 +42,7 @@ class Game extends Model
                     $game->delete();
                 }
 
+                $game->metas->addMetas($data);
                 $game->addImageIfMissing($data['header_image']);
                 $game->addPlatformModifier($data['platforms']);
             }
@@ -50,10 +59,21 @@ class Game extends Model
         return $this->morphToMany(Modifier::class, 'modifiable');
     }
 
+    public function metas(): HasOne
+    {
+        return $this->hasOne(GameMeta::class);
+    }
+
+    public function getMetasAttribute()
+    {
+        return $this->metas()->first();
+    }
+
     public function getImageAttribute(): ?string
     {
         return $this->image()->first()->image_url ?? null;
     }
+
 
     private function addImageIfMissing(string $image): void
     {

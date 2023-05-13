@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
@@ -18,11 +19,28 @@ class SearchController extends Controller
             ->get();
     }
 
-    public function get(string $id)
+    public function get(Request $request, string $id)
     {
-        return Game::where('id', $id)
-            ->with('image')
+        $options = $request->input('options');
+
+        $options = json_decode($options, true);
+
+        $game = Game::where('id', $id)->with('image')
             ->with('modifiers')
             ->first();
+
+        // If an option is false, add where clause to remove it.
+        // We do not want to add the were clause for true, as these filters
+        // are for filtering out, not limiting to.
+
+        $options = array_filter($options, fn ($option) => $option == false);
+
+        foreach ($options as $option => $value) {
+            if ($game->metas->$option == 1) {
+                return null;
+            }
+        }
+
+        return $game;
     }
 }
