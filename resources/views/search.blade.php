@@ -86,7 +86,7 @@
                 <i class="fa-solid fa-square-xmark fa-2xl"></i>
             </button>
 
-            <h1 class="mx-auto text-2xl font-bold -my-6">Settings</h1>
+            <h1 class="mx-auto -my-6 text-2xl font-bold">Settings</h1>
 
             <div class="flex flex-col gap-y-6">
                 <div class="flex flex-col px-6 mr-auto gap-y-1">
