@@ -3,6 +3,11 @@
         x-data="data"
         class="relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center bg-dots-darker dark:bg-gray-900 selection:bg-red-500 selection:text-white"
     >
+        <div class="absolute top-0 w-full h-[.2vh]">
+            <div class="loading h-full bg-blue-600 w-[0%]">
+            </div>
+        </div>
+
         <div class="w-2/4 p-6 mx-auto mt-24 lg:p-8">
             <!-- Logo -->
             <div class="flex justify-center">
@@ -73,6 +78,7 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('data', () => ({
                 search: '',
+                loadProgress: 0,
                 games: [],
 
                 init() {
@@ -82,10 +88,27 @@
                             this.getGames();
                         }, 500);
                     });
+
+                    this.$watch('loadProgress', (value, old) => {
+                        gsap.fromTo(".loading", { width: `${old}%` }, {
+                            width: `${value}%`,
+                            duration: 1,
+                        });
+
+                        // Reset loadProgress to 0 after 2 seconds of being 100
+                        if (value === 100) {
+                            clearTimeout(this.loadingTimeout);
+                            this.loadingTimeout = setTimeout(() => {
+                                this.loadProgress = 0;
+                            }, 2000);
+                        }
+                    });
                 },
 
                 async getGames() {
                     if (this.search.length > 0) {
+                        this.loadProgress = 0;
+
                         try {
                             const response = await fetch(`/api/steam/search/${this.search}`);
                             const games = await response.json();
@@ -107,6 +130,10 @@
                                     this.games.shift(item);
                                 }
 
+                                this.loadProgress = this.loadProgress + (100 / games.length);
+                                console.log("Games Length: " + games.length);
+                                console.log(this.loadProgress);
+
                                 this.games.push(item);
 
                                 // Animate element
@@ -118,6 +145,8 @@
                                     });
                                 });
                             }
+
+                            this.loadProgress = 100;
                         } catch (error) {
                             console.error(error);
                             return [];
