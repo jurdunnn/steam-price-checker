@@ -27,10 +27,10 @@
                 <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
                     <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         <template x-for="game in games" :key="game.steam_app_id">
-                            <li class="flex flex-row flex-grow px-4 overflow-hidden" :id="`game${game.id}`">
+                            <li class="flex flex-row flex-grow px-4 overflow-hidden" :id="`game${game.id}`" style="opacity: 0">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
 
-                                <div class="flex flex-col justify-between py-6 ml-4">
+                                <div class="flex flex-col justify-between py-2 ml-4">
                                     <p x-show="game.title != null" class="font-semibold" x-text="game.title"></p>
 
                                     <!--
@@ -93,14 +93,14 @@
 
                             if (!this.games.length > 0) {
                                 gsap.fromTo("#results", { height: "0vh" }, {
-                                    height: "50vh",
+                                    height: "40vh",
                                     duration: 0.3,
                                 });
                             }
 
                             // If search is empty, animate hiding results.
                             if (this.search == '') {
-                                gsap.fromTo("#results", { height: "50vh" }, {
+                                gsap.fromTo("#results", { height: "40vh" }, {
                                     height: "0vh",
                                     duration: 0.3,
                                 }).then(() => {
@@ -158,10 +158,10 @@
 
                                 // Animate element
                                 Alpine.nextTick(() => {
-                                    gsap.from(`#game${item.id}`, {
-                                        duration: 1,
-                                        ease: "sine.out",
-                                        opacity: 0.5
+                                    gsap.fromTo(`#game${item.id}`, { opacity: 0 }, {
+                                        duration: 0.5,
+                                        ease: "sine.in",
+                                        opacity: 1,
                                     });
                                 });
                             }
