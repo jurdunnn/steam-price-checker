@@ -93,6 +93,9 @@
                             // Remove games from this.games if they are already present in the newly fetched games
                             this.games = this.games.filter((game) => !games.some((g) => g.id === game.id));
 
+                            // Remove games which do not match search to search.
+                            this.games = this.games.filter((game) => game.title === this.search);
+
                             // Add new games to games array (up to a maximum length of 5)
                             for (const game of games) {
 
