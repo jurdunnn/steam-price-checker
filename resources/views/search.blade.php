@@ -39,7 +39,7 @@
                                         Though annoying, it's not massively a problem, as the output below would have needed
                                         to be limited to ~3 modifiers anyway.
                                     -->
-                                    <div x-show="game.modifiers.length > 0" class="flex flex-row max-w-full text-sm gap-x-1">
+                                    <div x-show="game.modifiers.length > 0" class="flex overflow-hidden flex-row max-w-full text-sm gap-x-1">
                                         <template x-if="game.modifiers.length == 1">
                                             <p
                                                 class="px-2 py-1 rounded-xl"
