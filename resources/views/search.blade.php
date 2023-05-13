@@ -120,8 +120,14 @@
                         // Reset loadProgress to 0 after 2 seconds of being 100
                         if (value === 100) {
                             clearTimeout(this.loadingTimeout);
+
                             this.loadingTimeout = setTimeout(() => {
-                                this.loadProgress = 0;
+                                gsap.fromTo(".loading", { opacity: 0 }, {
+                                    opacity: 1,
+                                    duration: 0.4,
+                                }).then(() => {
+                                    this.loadProgress = 0;
+                                });
                             }, 2000);
                         }
                     });
