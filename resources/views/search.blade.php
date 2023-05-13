@@ -22,7 +22,7 @@
                 <div x-show="games.length > 0" class="absolute bottom-18 min-h-[4rem] min-w-full">
                     <ul class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
                         <template x-for="game in games" :key="game.steam_app_id">
-                            <li class="flex flex-row px-4 hover:grow-110">
+                            <li class="flex flex-row px-4 hover:grow-110" :id="`game${game.id}`">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
 
                                 <div class="flex flex-col justify-between ml-4">
@@ -108,6 +108,15 @@
                                 }
 
                                 this.games.push(item);
+
+                                // Animate element
+                                Alpine.nextTick(() => {
+                                    gsap.from(`#game${item.id}`, {
+                                        duration: 1,
+                                        ease: "sine.out",
+                                        opacity: 0.5
+                                    });
+                                });
                             }
                         } catch (error) {
                             console.error(error);
@@ -119,5 +128,6 @@
                 }
             }));
         })
+
     </script>
 </x-app-layout>
