@@ -140,6 +140,8 @@
                 games: [],
 
                 init() {
+                    gsap.registerPlugin(TextPlugin);
+
                     this.syncSettings();
 
                     this.$watch('search', () => {
@@ -189,8 +191,6 @@
                             }, 2000);
                         }
                     });
-
-                    gsap.registerPlugin(TextPlugin);
 
                     this.introductionText();
                 },
