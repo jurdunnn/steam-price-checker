@@ -139,6 +139,8 @@
                 games: [],
 
                 init() {
+                    this.syncSettings();
+
                     this.$watch('search', () => {
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
@@ -253,6 +255,20 @@
                     } else {
                         this.games = [];
                     }
+                },
+
+                syncSettings() {
+                    this.settings.dlc = JSON.parse(localStorage.dlc);
+                    this.settings.video = JSON.parse(localStorage.video);
+                    this.settings.unreleased = JSON.parse(localStorage.unreleased);
+                    this.settings.free = JSON.parse(localStorage.free);
+
+                    this.$watch('settings', () => {
+                        localStorage.dlc = this.settings.dlc;
+                        localStorage.video = this.settings.video;
+                        localStorage.unreleased = this.settings.unreleased;
+                        localStorage.free = this.settings.free;
+                    });
                 }
             }));
         })
