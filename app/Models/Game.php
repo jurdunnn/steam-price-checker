@@ -39,7 +39,7 @@ class Game extends Model
                 $data = $steam->getGameInfoFromSteam($game->steam_app_id);
 
                 // Delete game if no data was retrieved;
-                if (!$data) {
+                if ($data == null) {
                     $game->delete();
                 }
 

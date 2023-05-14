@@ -264,6 +264,8 @@
                     this.settings.free = JSON.parse(localStorage.free);
 
                     this.$watch('settings', () => {
+                        this.getGames();
+
                         localStorage.dlc = this.settings.dlc;
                         localStorage.video = this.settings.video;
                         localStorage.unreleased = this.settings.unreleased;
