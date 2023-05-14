@@ -279,33 +279,40 @@
                 },
 
                 introductionText() {
-                    gsap.to("#introduction-text",
+                    gsap.fromTo("#introduction-text",
                         {
-                            text:
-                            {
+                            text: {
+                                value: ""
+                            },
+                        },
+                        {
+                            text: {
                                 value: "Worth it?"
                             },
-                            duration: 2,
+                            duration: 1,
                             ease: "none"
                         }
                     ).then(() => {
-                        gsap.fromTo("#introduction-text",
+                        const timeline = gsap.timeline({
+                            delay: 1
+                        });
+
+                        const reverse = gsap.fromTo("#introduction-text",
                             {
-                                text:
-                                {
-                                    value: "Worth it?"
+                                text: {
+                                    value: "",
                                 },
                             },
                             {
-                                text:
-                                {
-                                    value: ""
+                                text: {
+                                    value: "Worth it?"
                                 },
-                                duration: .5,
-                                delay: 1,
+                                duration: 1,
                                 ease: "none"
                             }
-                        )
+                        );
+
+                        timeline.add(reverse.reverse(0));
                     });
                 }
             }));
