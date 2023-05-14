@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Laravel\Scout\Searchable;
 
 class Game extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = [
         'steam_app_id',
@@ -47,6 +48,13 @@ class Game extends Model
                 $game->addPlatformModifier($data['platforms']);
             }
         });
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->title,
+        ];
     }
 
     public function image(): HasOne

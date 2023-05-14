@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
-            $table->string('steam_app_id')->index();
+            $table->string('steam_app_id');
             $table->string('title');
             $table->longText('image')->nullable();
             $table->timestamps();

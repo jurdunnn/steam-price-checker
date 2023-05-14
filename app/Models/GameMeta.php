@@ -26,7 +26,7 @@ class GameMeta extends Model
 
     public function addMetas(array $data): void
     {
-        if ($data['release_date']['date'] == 'Coming soon') {
+        if ($data['release_date']['date'] == 'Coming soon' || $data['release_date']['date'] == 'To be announced') {
             $releaseDate = true;
         } else {
             $releaseDate = Carbon::parse($data['release_date']['date']) > now();

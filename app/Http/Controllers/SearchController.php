@@ -12,12 +12,7 @@ class SearchController extends Controller
     {
         Game::flushEventListeners();
 
-        return Game::select(DB::raw('steam_app_id, id, title, CASE WHEN title = "' . $search . '" THEN 0 ELSE 1 END as priority'))
-            ->where('title', 'LIKE', '%' . $search . '%')
-            ->orWhere('steam_app_id', $search)
-            ->orderByRaw('priority ASC')
-            ->limit(5)
-            ->get();
+        return Game::search($search)->take(5)->get();
     }
 
     public function get(Request $request, string $id)
