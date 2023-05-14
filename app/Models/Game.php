@@ -28,10 +28,10 @@ class Game extends Model
             if (
                 !$game->image()->first()
                 || !$game->modifiers->where('type', ModifierType::PLATFORM)->count()
-                || $game->metas->dlc == null
-                || $game->metas->video == null
-                || $game->metas->unreleased == null
-                || $game->metas->free == null
+                || $game->metas->dlc === null
+                || $game->metas->video === null
+                || $game->metas->unreleased === null
+                || $game->metas->free === null
             ) {
                 $steam = new SteamService;
 
