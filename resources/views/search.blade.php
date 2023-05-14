@@ -223,13 +223,15 @@
                             for (const game of games) {
                                 const optionsString = JSON.stringify(this.settings);
 
-                                const response = await fetch(`/api/steam/search/get/${game.id}?options=${encodeURIComponent(optionsString)}`).catch((error) => {
-                                    gamesLength--;
-                                });
+                                const response = await fetch(`/api/steam/search/get/${game.id}?options=${encodeURIComponent(optionsString)}`);
 
                                 const item = await response.json();
 
                                 this.loadProgress += 100 / gamesLength;
+
+                                if (item.errors) {
+                                    continue;
+                                }
 
                                 this.games.push(item);
 

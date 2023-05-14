@@ -37,7 +37,9 @@ class SearchController extends Controller
 
         foreach ($options as $option => $value) {
             if ($game->metas->$option == 1) {
-                return null;
+                return [
+                    'errors' => 'Filtered Out',
+                ];
             }
         }
 
