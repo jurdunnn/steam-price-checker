@@ -1,7 +1,7 @@
 <x-app-layout>
     <div
         x-data="data"
-        class="relative min-h-screen bg-gray-900 bg-center sm:flex sm:justify-center selection:bg-blue-500 selection:text-white"
+        class="relative min-h-screen bg-center sm:flex sm:justify-center selection:bg-blue-500 selection:text-white"
     >
         <div class="absolute top-0 w-full h-[.2vh]">
             <div class="loading h-full bg-blue-600 w-[0%]">
@@ -16,16 +16,17 @@
 
             <!-- Search -->
             <div class="relative">
-                <div class="relative flex flex-row w-full text-white bg-gray-700 border-gray-500 rounded-lg border-1">
+                <div class="relative flex flex-row w-full text-white border-gray-500 rounded-lg border-1">
                     <input
                         type="text"
-                        class="w-full py-4 text-xl bg-gray-700 border-none rounded-lg border-l-1"
+                        class="w-full py-4 text-xl border border-gray-800 rounded-lg shadow-xl bg-slate-700 border-l-1"
                         x-model.debounce.500ms="search"
                         />
+                    <p id="introduction-text" class="absolute left-4 text-xl top-[50%] -translate-y-[50%]"></p>
                 </div>
 
                 <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
-                    <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] mt-2 rounded-lg py-1 bg-gray-700 text-white">
+                    <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] shadow-2xl mt-2 rounded-lg py-1 bg-slate-700 text-white">
                         <template x-for="game in games" :key="game.steam_app_id">
                             <li class="flex flex-row flex-grow px-4 overflow-hidden max-h-28" :id="`game${game.id}`" style="opacity: 0">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
@@ -74,14 +75,14 @@
         </div>
 
         <!-- Sidebar show button -->
-        <div x-on:click="showSettings" class="absolute cursor-pointer flex items-center group right-0 top-0 w-12 h-[100vh] hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-600 duration-300 ease-in-out opacity-25 hover:opacity-75">
+        <div x-on:click="showSettings" class="absolute cursor-pointer flex items-center group right-0 top-0 w-12 h-[100vh] hover:bg-gradient-to-r hover:from-transparent hover:to-slate-700 duration-300 ease-in-out opacity-25 hover:opacity-75">
             <span class="mx-auto text-white group-hover:scale-110">
                 <i class="fa-solid fa-chevron-left fa-xl"></i>
             </span>
         </div>
 
         <!-- Settings Sidebar -->
-        <div x-show="showSidebar" id="sidebar" class="absolute shadow-xl right-0 flex flex-col gap-y-12 top-0 w-0 h-[100vh] bg-gray-700 text-white">
+        <div x-show="showSidebar" id="sidebar" class="absolute shadow-xl right-0 flex flex-col gap-y-12 top-0 w-0 h-[100vh] bg-slate-700 text-white">
             <button x-on:click="hideSettings" class="p-2 mr-auto hover:scale-105">
                 <i class="fa-solid fa-square-xmark fa-2xl"></i>
             </button>
@@ -188,6 +189,10 @@
                             }, 2000);
                         }
                     });
+
+                    gsap.registerPlugin(TextPlugin);
+
+                    this.introductionText();
                 },
 
                 showSettings() {
@@ -270,6 +275,37 @@
                         localStorage.video = this.settings.video;
                         localStorage.unreleased = this.settings.unreleased;
                         localStorage.free = this.settings.free;
+                    });
+                },
+
+                introductionText() {
+                    gsap.to("#introduction-text",
+                        {
+                            text:
+                            {
+                                value: "Worth it?"
+                            },
+                            duration: 2,
+                            ease: "none"
+                        }
+                    ).then(() => {
+                        gsap.fromTo("#introduction-text",
+                            {
+                                text:
+                                {
+                                    value: "Worth it?"
+                                },
+                            },
+                            {
+                                text:
+                                {
+                                    value: ""
+                                },
+                                duration: .5,
+                                delay: 1,
+                                ease: "none"
+                            }
+                        )
                     });
                 }
             }));

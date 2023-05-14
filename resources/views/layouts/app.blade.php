@@ -16,6 +16,7 @@
 
         <!-- Animations -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/TextPlugin.min.js" defer></script>
 
         <!-- Icons -->
         <link href="{{ asset('fontawesome/css/fontawesome.css') }}" rel="stylesheet">
@@ -27,7 +28,7 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-cover bg-left-top bg-[url('../../public/images/background3.svg')]">
             <!-- Page Content -->
             <main>
                 {{ $slot }}
