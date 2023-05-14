@@ -41,7 +41,7 @@
                                         to be limited to ~3 modifiers anyway.
                                     -->
                                     <div x-show="game.modifiers.length > 0" class="flex flex-row max-w-full overflow-hidden text-sm gap-x-1">
-                                        <template x-if="game.modifiers.length == 1">
+                                        <template x-if="game.modifiers.length >= 1">
                                             <p
                                                 class="px-2 py-1 rounded-xl"
                                                 :class="`bg-${game.modifiers[0].color}-600`"
@@ -49,7 +49,7 @@
                                             ></p>
                                         </template>
 
-                                        <template x-if="game.modifiers.length == 2">
+                                        <template x-if="game.modifiers.length >= 2">
                                             <p
                                                 class="px-2 py-1 rounded-xl"
                                                 :class="`bg-${game.modifiers[1].color}-600`"
@@ -57,7 +57,7 @@
                                             ></p>
                                         </template>
 
-                                        <template x-if="game.modifiers.length == 3">
+                                        <template x-if="game.modifiers.length >= 3">
                                             <p
                                                 x-show="game.modifiers == 3"
                                                 class="px-2 py-1 rounded-xl"

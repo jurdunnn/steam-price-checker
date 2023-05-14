@@ -29,6 +29,7 @@ class Game extends Model
             if (
                 !$game->image()->first()
                 || !$game->modifiers->where('type', ModifierType::PLATFORM)->count()
+                || !$game->modifiers->where('type', ModifierType::METACRITIC)->count()
                 || $game->metas->dlc === null
                 || $game->metas->video === null
                 || $game->metas->unreleased === null
@@ -46,6 +47,7 @@ class Game extends Model
                 $game->metas->addMetas($data);
                 $game->addImageIfMissing($data['header_image']);
                 $game->addPlatformModifier($data['platforms']);
+                $game->addMetacriticScore($data);
             }
         });
     }
@@ -107,7 +109,7 @@ class Game extends Model
         switch (sizeof($platforms)) {
             case 1:
                 $this->modifiers()->firstOrCreate([
-                    'title' => 'Not many support platforms',
+                    'title' => 'Few Supported Platforms',
                     'type' => ModifierType::PLATFORM,
                     'color' => 'red',
                     'strength' => -10
@@ -115,7 +117,7 @@ class Game extends Model
                 break;
             case 2:
                 $this->modifiers()->firstOrCreate([
-                    'title' => 'An acceptable number of platforms',
+                    'title' => 'Average Number of Platforms Supported',
                     'type' => ModifierType::PLATFORM,
                     'color' => 'gray',
                     'strength' => 0
@@ -123,12 +125,56 @@ class Game extends Model
                 break;
             case 3:
                 $this->modifiers()->firstOrCreate([
-                    'title' => 'Supports many platforms',
+                    'title' => 'Many Supported Platforms',
                     'type' => ModifierType::PLATFORM,
                     'color' => 'green',
                     'strength' => 10
                 ]);
                 break;
         }
+    }
+
+    private function addMetacriticScore(array $data)
+    {
+        if ($this->modifiers()
+            ->where('type', ModifierType::METACRITIC)
+            ->exists()
+        ) {
+            return;
+        }
+
+        $score = $data['metacritic']['score'] ?? null;
+
+        if ($score > 70) {
+            $contents = [
+                'title' => 'High Metacritic Score',
+                'type' => ModifierType::METACRITIC,
+                'color' => 'green',
+                'strength' => 10
+            ];
+        } elseif ($score > 50) {
+            $contents = [
+                'title' => 'Average Metacritic Score',
+                'type' => ModifierType::METACRITIC,
+                'color' => 'gray',
+                'strength' => 0
+            ];
+        } elseif ($score === null) {
+            $contents = [
+                'title' => 'No Metacritic Score',
+                'type' => ModifierType::METACRITIC,
+                'color' => 'gray',
+                'strength' => 0
+            ];
+        } else {
+            $contents = [
+                'title' => 'Poor Metacritic Score',
+                'type' => ModifierType::METACRITIC,
+                'color' => 'red',
+                'strength' => -10
+            ];
+        }
+
+        $this->modifiers()->firstOrCreate($contents);
     }
 }
