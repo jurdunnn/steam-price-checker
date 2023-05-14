@@ -287,7 +287,7 @@
                         },
                         {
                             text: {
-                                value: "Worth it?"
+                                value: "Welcome to steam.priceprober.com"
                             },
                             duration: 1,
                             ease: "none"
@@ -305,7 +305,7 @@
                             },
                             {
                                 text: {
-                                    value: "Worth it?"
+                                    value: "Welcome to steam.priceprober.com"
                                 },
                                 duration: 1,
                                 ease: "none"
