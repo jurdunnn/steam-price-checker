@@ -263,10 +263,10 @@
                 },
 
                 syncSettings() {
-                    this.settings.dlc = JSON.parse(localStorage.dlc);
-                    this.settings.video = JSON.parse(localStorage.video);
-                    this.settings.unreleased = JSON.parse(localStorage.unreleased);
-                    this.settings.free = JSON.parse(localStorage.free);
+                    this.settings.dlc = localStorage.dlc == "true";
+                    this.settings.video = localStorage.video == "true";
+                    this.settings.unreleased = localStorage.unreleased == "true";
+                    this.settings.free = localStorage.free == "true";
 
                     this.$watch('settings', () => {
                         this.getGames();
