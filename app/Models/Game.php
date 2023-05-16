@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ModifierType;
 use App\Services\SteamService;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -26,27 +27,19 @@ class Game extends Model
                 $game->metas()->create();
             }
 
-            if (
-                !$game->image()->first()
-                || !$game->modifiers->where('type', ModifierType::PLATFORM)->count()
-                || !$game->modifiers->where('type', ModifierType::METACRITIC)->count()
-                || $game->metas->dlc === null
-                || $game->metas->video === null
-                || $game->metas->unreleased === null
-                || $game->metas->free === null
-            ) {
+            if ($game->doesNotHaveRequiredData()) {
                 $steam = new SteamService;
 
                 $data = $steam->getGameInfoFromSteam($game->steam_app_id);
 
-                // Delete game if no data was retrieved;
+                // Delete game if no data was retrieved
                 if ($data == null) {
                     $game->delete();
                 }
 
                 $game->metas->addMetas($data);
-                $game->addImageIfMissing($data['header_image']);
-                $game->addPlatformModifier($data['platforms']);
+                $game->addImageIfMissing($data);
+                $game->addPlatformModifier($data);
                 $game->addMetacriticScore($data);
             }
         });
@@ -84,9 +77,21 @@ class Game extends Model
         return $this->image()->first()->image_url ?? null;
     }
 
-
-    private function addImageIfMissing(string $image): void
+    private function doesNotHaveRequiredData(): bool
     {
+        return !$this->image()->first()
+            || !$this->modifiers->where('type', ModifierType::PLATFORM)->count()
+            || !$this->modifiers->where('type', ModifierType::METACRITIC)->count()
+            || $this->metas->dlc === null
+            || $this->metas->video === null
+            || $this->metas->unreleased === null
+            || $this->metas->free === null;
+    }
+
+    private function addImageIfMissing(array $data): void
+    {
+        $image = $data['header_image'] ?? null;
+
         if (!$this->image()->exists()) {
             $this->image()->create([
                 'game_id' => $this->id,
@@ -95,12 +100,25 @@ class Game extends Model
         }
     }
 
-    private function addPlatformModifier(array $platforms): void
+    private function addPlatformModifier(array $data): void
     {
         if ($this->modifiers()
             ->where('type', ModifierType::PLATFORM)
             ->exists()
         ) {
+            return;
+        }
+
+        $platforms = $data['platforms'] ?? null;
+
+        if (!$platforms) {
+            $this->modifiers()->firstOrCreate([
+                'title' => 'No Platform Information',
+                'type' => ModifierType::PLATFORM,
+                'color' => 'gray',
+                'strength' => 0
+            ]);
+
             return;
         }
 
