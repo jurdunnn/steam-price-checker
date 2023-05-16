@@ -13,8 +13,7 @@ class GameMeta extends Model
 
     protected $fillable = [
         'game_id',
-        'dlc',
-        'video',
+        'type',
         'unreleased',
         'free'
     ];
@@ -26,25 +25,38 @@ class GameMeta extends Model
 
     public function addMetas(array $data): void
     {
-        $releaseDate = $data['release_date'] ?? null;
-
-        if ($data['release_date']) {
-            return;
-        }
-
-        if ($releaseDate['date'] == 'Coming soon' || $releaseDate['date'] == 'To be announced') {
-            $isUnreleased = false;
-        } else {
-            $carbonDate = Carbon::parse($releaseDate['date']) ?? null;
-
-            $isUnreleased = $carbonDate ? $carbonDate > now() : false;
-        }
-
         $this->update([
-            'free' => $data['is_free'] ?? 0,
-            'dlc' => $data['type'] == 'dlc' ?? 0,
-            'video' => $data['type'] == 'video' ?? 0,
-            'unreleased' => $isUnreleased,
+            'free' => $data['is_free'] ?? false,
+            'type' => $data['type'] ?? 'undefined',
+            'unreleased' => $this->isUnreleased($data) ?? false,
         ]);
+    }
+
+    private function isUnreleased($data)
+    {
+        $releaseDate = $data['release_date'] ?? null;
+        $carbonDate = null;
+        $isUnreleased = false;
+
+        if (preg_match('/(\d{1,2}) (\w{3}), (\d{4})/', $releaseDate['date'], $matches)) {
+            $day = $matches[1];
+            $month = $matches[2];
+            $year = $matches[3];
+
+            $months = [
+                'Jan' => 'January',
+                'Feb' => 'February',
+                'Mar' => 'March',
+            ];
+
+            if (isset($months[$month])) {
+                $fullMonth = $months[$month];
+                $formattedDate = $day . ' ' . $fullMonth . ', ' . $year;
+                $carbonDate = Carbon::createFromFormat('d F, Y', $formattedDate)->setTimezone('UTC');
+                $isUnreleased = $carbonDate > now();
+            }
+        }
+
+        return $isUnreleased;
     }
 }

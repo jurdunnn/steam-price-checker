@@ -24,6 +24,7 @@ class SearchController extends Controller
 
         $game = Game::where('id', $id)->with('image')
             ->with('modifiers')
+            ->with('metas')
             ->first();
 
         // If an option is false, add where clause to remove it.
@@ -33,7 +34,7 @@ class SearchController extends Controller
         $options = array_filter($options, fn ($option) => $option == false);
 
         foreach ($options as $option => $value) {
-            if ($game->metas->$option == 1) {
+            if ($game->metas->type == $option) {
                 return [
                     'errors' => 'Filtered Out',
                 ];

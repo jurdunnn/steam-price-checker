@@ -84,8 +84,7 @@ class Game extends Model
         return !$this->image()->first()
             || !$this->modifiers->where('type', ModifierType::PLATFORM)->count()
             || !$this->modifiers->where('type', ModifierType::METACRITIC)->count()
-            || $this->metas->dlc === null
-            || $this->metas->video === null
+            || $this->metas->type === null
             || $this->metas->unreleased === null
             || $this->metas->free === null;
     }
