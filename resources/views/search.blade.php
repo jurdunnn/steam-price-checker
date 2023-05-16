@@ -221,10 +221,11 @@
                         this.games = [];
 
                         try {
-                            const response = await fetch(`/api/steam/search/${this.search}`);
-                            const games = await response.json();
-
                             const numberOfGames = 5;
+
+                            const response = await fetch(`/api/steam/search/${this.search}?limit=${numberOfGames * 2}`);
+
+                            const games = await response.json();
 
                             // Add new games to games array (up to a maximum length of 5)
                             for (const game of games) {

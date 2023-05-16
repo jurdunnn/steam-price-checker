@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function search(string $search)
+    public function search(Request $request, string $search)
     {
         Game::flushEventListeners();
 
-        return Game::search($search)->take(10)->get();
+        $limit = json_decode($request->input('limit'), true);
+
+        return Game::search($search)->take($limit)->get();
     }
 
     public function get(Request $request, string $id)
