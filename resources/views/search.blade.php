@@ -224,17 +224,21 @@
                             const response = await fetch(`/api/steam/search/${this.search}`);
                             const games = await response.json();
 
-                            var gamesLength = games.length;
+                            const numberOfGames = 5;
 
                             // Add new games to games array (up to a maximum length of 5)
                             for (const game of games) {
+                                if (this.games.length >= numberOfGames) {
+                                    break;
+                                }
+
                                 const optionsString = JSON.stringify(this.settings);
 
                                 const response = await fetch(`/api/steam/search/get/${game.id}?options=${encodeURIComponent(optionsString)}`);
 
                                 const item = await response.json();
 
-                                this.loadProgress += 100 / gamesLength;
+                                this.loadProgress += 100 / numberOfGames;
 
                                 if (item.errors) {
                                     continue;

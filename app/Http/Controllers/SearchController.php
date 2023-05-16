@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -12,7 +11,7 @@ class SearchController extends Controller
     {
         Game::flushEventListeners();
 
-        return Game::search($search)->take(5)->get();
+        return Game::search($search)->take(10)->get();
     }
 
     public function get(Request $request, string $id)
