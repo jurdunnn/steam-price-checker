@@ -18,3 +18,4 @@ yarn-error.log
 /.idea
 /.vscode
 public/steam_apps.json
+data.ms
