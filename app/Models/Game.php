@@ -35,6 +35,8 @@ class Game extends Model
                 // Delete game if no data was retrieved
                 if ($data == null) {
                     $game->delete();
+
+                    return;
                 }
 
                 $game->metas->addMetas($data);

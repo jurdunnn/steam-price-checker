@@ -26,17 +26,25 @@ class GameMeta extends Model
 
     public function addMetas(array $data): void
     {
-        if ($data['release_date']['date'] == 'Coming soon' || $data['release_date']['date'] == 'To be announced') {
-            $releaseDate = true;
+        $releaseDate = $data['release_date'] ?? null;
+
+        if ($data['release_date']) {
+            return;
+        }
+
+        if ($releaseDate['date'] == 'Coming soon' || $releaseDate['date'] == 'To be announced') {
+            $isUnreleased = false;
         } else {
-            $releaseDate = Carbon::parse($data['release_date']['date']) > now();
+            $carbonDate = Carbon::parse($releaseDate['date']) ?? null;
+
+            $isUnreleased = $carbonDate ? $carbonDate > now() : false;
         }
 
         $this->update([
-            'free' => $data['is_free'],
-            'dlc' => $data['type'] == 'dlc',
-            'video' => $data['type'] == 'video',
-            'unreleased' => $releaseDate,
+            'free' => $data['is_free'] ?? 0,
+            'dlc' => $data['type'] == 'dlc' ?? 0,
+            'video' => $data['type'] == 'video' ?? 0,
+            'unreleased' => $isUnreleased,
         ]);
     }
 }
