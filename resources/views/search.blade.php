@@ -16,13 +16,13 @@
 
             <!-- Search -->
             <div class="relative">
-                <div class="relative flex flex-row w-full text-white border-gray-500 rounded-lg border-1">
+                <div x-on:mouseover="showIntro = false" class="relative flex flex-row w-full text-white border-gray-500 rounded-lg border-1">
                     <input
                         type="text"
                         class="w-full py-4 text-xl border border-gray-800 rounded-lg shadow-xl bg-slate-700 border-l-1"
                         x-model.debounce.500ms="search"
                         />
-                    <p id="introduction-text" class="absolute left-4 text-xl top-[50%] -translate-y-[50%]"></p>
+                    <p id="introduction-text" x-show="showIntro" class="absolute left-4 text-xl top-[50%] -translate-y-[50%]"></p>
                 </div>
 
                 <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
@@ -137,6 +137,7 @@
                     free: true,
                 },
                 showResults: false,
+                showIntro: true,
                 games: [],
 
                 init() {
