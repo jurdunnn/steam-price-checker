@@ -39,6 +39,18 @@ class SearchController extends Controller
                     'errors' => 'Filtered Out',
                 ];
             }
+
+            if ($option == 'free' && $game->metas->free == 1) {
+                return [
+                    'errors' => 'Filtered Out',
+                ];
+            }
+
+            if ($option == 'unreleased' && $game->metas->unreleased == 1) {
+                return [
+                    'errors' => 'Filtered Out',
+                ];
+            }
         }
 
         return $game;

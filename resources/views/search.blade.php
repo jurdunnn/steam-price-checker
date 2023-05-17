@@ -101,8 +101,8 @@
                 <div class="flex flex-col px-6 mr-auto">
                     <h2 class="text-xl font-bold">Videos and Trailers</h2>
                     <div class="flex gap-x-4">
-                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.video = true" :class="settings.video ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Show</button>
-                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105" x-on:click="settings.video = false" :class="!settings.video ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Hide</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.movie = true" :class="settings.movie ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg duration-150 ease-in hover:scale-105" x-on:click="settings.movie = false" :class="!settings.movie ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Hide</button>
                     </div>
                 </div>
 
@@ -121,6 +121,14 @@
                         <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg" x-on:click="settings.free = false" :class="!settings.free ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Hide</button>
                     </div>
                 </div>
+
+                <div class="flex flex-col px-6 mr-auto">
+                    <h2 class="text-xl font-bold">Music</h2>
+                    <div class="flex gap-x-4">
+                        <button class="px-4 py-2 text-lg font-semibold bg-green-400 rounded-lg" x-on:click="settings.music = true" :class="settings.music ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Show</button>
+                        <button class="px-4 py-2 text-lg font-semibold bg-red-400 rounded-lg" x-on:click="settings.music = false" :class="!settings.music ? 'duration-150 ease-in hover:scale-105' : 'opacity-25'">Hide</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -132,9 +140,10 @@
                 showSidebar: false,
                 settings: {
                     dlc: true,
-                    video: true,
+                    movie: true,
                     unreleased: true,
                     free: true,
+                    music: true,
                 },
                 showResults: false,
                 showIntro: true,
