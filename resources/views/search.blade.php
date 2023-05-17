@@ -280,17 +280,19 @@
 
                 syncSettings() {
                     this.settings.dlc = localStorage.dlc == "true";
-                    this.settings.video = localStorage.video == "true";
+                    this.settings.movie = localStorage.movie == "true";
                     this.settings.unreleased = localStorage.unreleased == "true";
                     this.settings.free = localStorage.free == "true";
+                    this.settings.music = localStorage.music == "true";
 
                     this.$watch('settings', () => {
                         this.getGames();
 
                         localStorage.dlc = this.settings.dlc;
-                        localStorage.video = this.settings.video;
+                        localStorage.movie = this.settings.movie;
                         localStorage.unreleased = this.settings.unreleased;
                         localStorage.free = this.settings.free;
+                        localStorage.music = this.settings.music;
                     });
                 },
 
