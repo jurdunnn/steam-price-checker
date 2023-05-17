@@ -267,7 +267,6 @@
                                 });
                             }
 
-                            console.log(this.games);
                             this.loadProgress = 100;
                         } catch (error) {
                             console.error(error);
