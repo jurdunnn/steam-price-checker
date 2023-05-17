@@ -1,7 +1,7 @@
 <x-app-layout>
     <div
         x-data="data"
-        class="relative min-h-screen bg-center sm:flex sm:justify-center selection:bg-blue-500 selection:text-white"
+        class="relative min-h-screen overflow-hidden bg-center sm:flex sm:justify-center selection:bg-blue-500 selection:text-white"
     >
         <div class="absolute top-0 w-full h-[.2vh]">
             <div class="loading h-full bg-blue-600 w-[0%]">
@@ -15,7 +15,7 @@
             </div>
 
             <!-- Search -->
-            <div class="relative">
+            <div id="search-wrapper" class="relative">
                 <div x-on:mouseover="showIntro = false" class="relative flex flex-row w-full text-white border-gray-500 rounded-lg border-1">
                     <input
                         type="text"
@@ -27,8 +27,8 @@
 
                 <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
                     <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] shadow-2xl mt-2 rounded-lg py-1 bg-slate-700 text-white">
-                        <template x-for="game in games" :key="game.steam_app_id">
-                            <li class="flex flex-row flex-grow px-4 overflow-hidden max-h-28" :id="`game${game.id}`" style="opacity: 0">
+                        <template x-for="game in games" :key="game.steam_app_id" :id="`game-{game.steam_app_id}`">
+                            <li x-on:mouseover="modalData = game" class="flex flex-row flex-grow px-4 overflow-hidden hover:cursor-help max-h-28" :id="`game${game.id}`" style="opacity: 0">
                                 <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
 
                                 <div class="flex flex-col justify-between py-2 ml-4">
@@ -67,8 +67,20 @@
                                         </template>
                                     </div>
                                 </div>
+
+
                             </li>
                         </template>
+
+                        <div id="modal" class="absolute w-[400px] px-2 py-4 bg-[#16253B] h-[600px] rounded-md" style="opacity: 0">
+                            <ul class="flex flex-col px-4 gap-y-4">
+                                <template x-for="modifier in modalData.modifiers">
+                                    <li>
+                                        <p class="px-2 py-1 rounded-xl" :class="`bg-${modifier.color}-600`" x-text="modifier.title"></p>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -147,10 +159,16 @@
                 },
                 showResults: false,
                 showIntro: true,
+                showModal: false,
+                modalData: {
+                    "title": null,
+                },
                 games: [],
 
                 init() {
                     gsap.registerPlugin(TextPlugin);
+
+                    this.infoModal();
 
                     this.syncSettings();
 
@@ -330,6 +348,36 @@
                         );
 
                         timeline.add(reverse.reverse(0));
+                    });
+                },
+
+                infoModal() {
+                    var modal = document.querySelector('#modal');
+                    var wrapper = document.querySelector('#search-wrapper');
+
+
+                    function moveModal(e) {
+                        var mouseX = e.pageX;
+                        var mouseY = e.pageY;
+
+                        TweenLite.to(modal, 0.3, {
+                            css: {
+                                left: mouseX - 320,
+                                    top: mouseY - 480
+                            }
+                        });
+                    }
+
+                    var flag = false;
+                    wrapper.addEventListener('mouseover', function() {
+                        flag = true;
+                        TweenLite.to(modal, 0.4, { scale: 1, autoAlpha: 1 });
+                        wrapper.addEventListener('mousemove', moveModal);
+                    });
+
+                    wrapper.addEventListener('mouseout', function() {
+                        flag = false;
+                        TweenLite.to(modal, 0.4, { scale: 0.1, autoAlpha: 0 });
                     });
                 }
             }));

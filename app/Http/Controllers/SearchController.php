@@ -13,7 +13,13 @@ class SearchController extends Controller
 
         $limit = json_decode($request->input('limit'), true);
 
-        return Game::search($search)->take($limit)->get();
+        $games = Game::search($search);
+
+        if ($limit) {
+            $games->take($limit);
+        }
+
+        return $games->get();
     }
 
     public function get(Request $request, string $id)
