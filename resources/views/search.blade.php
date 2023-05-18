@@ -8,14 +8,12 @@
             </div>
         </div>
 
-        <div class="w-2/4 p-6 mx-auto mt-24 lg:p-8">
-            <!-- Logo -->
-            <div class="flex justify-center">
-                <x-logo />
-            </div>
+        <div class="flex flex-col w-full mx-auto sm:p-6 gap-y-12 lg:p-8">
+            <div id="search-wrapper" class="mx-auto sm:w-1/2">
+                <div class="flex justify-center">
+                    <x-logo />
+                </div>
 
-            <!-- Search -->
-            <div id="search-wrapper" class="relative">
                 <div x-on:mouseover="showIntro = false" class="relative flex flex-row w-full text-white border-gray-500 rounded-lg border-1">
                     <input
                         type="text"
@@ -24,65 +22,26 @@
                         />
                     <p id="introduction-text" x-show="showIntro" class="absolute left-4 text-xl top-[50%] -translate-y-[50%]"></p>
                 </div>
+            </div>
 
-                <div x-show="showResults == true" class="absolute h-full min-w-full bottom-18">
-                    <ul id="results" class="min-w-full flex flex-col gap-y-2 m-h-[4rem] shadow-2xl mt-2 rounded-lg py-1 bg-slate-700 text-white">
-                        <template x-for="game in games" :key="game.steam_app_id" :id="`game-{game.steam_app_id}`">
-                            <li x-on:mouseover="modalData = game" class="flex flex-row flex-grow px-4 overflow-hidden hover:cursor-help max-h-28" :id="`game${game.id}`" style="opacity: 0">
-                                <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-48" />
+            <div class="min-w-full px-2 sm:px-8">
+                <ul id="results" class="min-w-full min-h-full py-1 mt-2 text-white grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <template x-for="game in games" :key="game.steam_app_id">
+                        <li x-on:mouseover="modalData = game" class="flex flex-row flex-grow overflow-hidden max-h-32 cursor-zoom-out" :id="`game${game.steam_app_id}`" style="opacity: 0">
+                            <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-full" />
+                        </li>
+                    </template>
 
-                                <div class="flex flex-col justify-between py-2 ml-4">
-                                    <p x-show="game.title != null" class="font-semibold" x-text="game.title"></p>
-
-                                    <!--
-                                        Unfortunately an alpinejs bug occurred here, preventing a loop from being possible.
-
-                                        Though annoying, it's not massively a problem, as the output below would have needed
-                                        to be limited to ~3 modifiers anyway.
-                                    -->
-                                    <div x-show="game.modifiers.length > 0" class="flex flex-row max-w-full overflow-hidden text-sm gap-x-1">
-                                        <template x-if="game.modifiers.length >= 1">
-                                            <p
-                                                class="px-2 py-1 rounded-xl"
-                                                :class="`bg-${game.modifiers[0].color}-600`"
-                                                x-text="game.modifiers[0].title"
-                                            ></p>
-                                        </template>
-
-                                        <template x-if="game.modifiers.length >= 2">
-                                            <p
-                                                class="px-2 py-1 rounded-xl"
-                                                :class="`bg-${game.modifiers[1].color}-600`"
-                                                x-text="game.modifiers[1].title"
-                                            ></p>
-                                        </template>
-
-                                        <template x-if="game.modifiers.length >= 3">
-                                            <p
-                                                x-show="game.modifiers == 3"
-                                                class="px-2 py-1 rounded-xl"
-                                                :class="`bg-${game.modifiers[2].color}-600`"
-                                                x-text="game.modifiers[2].title"
-                                            ></p>
-                                        </template>
-                                    </div>
-                                </div>
-
-
-                            </li>
-                        </template>
-
-                        <div id="modal" class="absolute w-[400px] px-2 py-4 bg-[#16253B] h-[600px] rounded-md" style="opacity: 0">
-                            <ul class="flex flex-col px-4 gap-y-4">
-                                <template x-for="modifier in modalData.modifiers">
-                                    <li>
-                                        <p class="px-2 py-1 rounded-xl" :class="`bg-${modifier.color}-600`" x-text="modifier.title"></p>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                    </ul>
-                </div>
+                    <div id="modal" class="absolute w-[400px] px-2 py-4 bg-[#16253B]/90 backdrop-brightness-200 backdrop-blur-3xl rounded-md" style="opacity: 0">
+                        <ul class="flex flex-col px-4 gap-y-4">
+                            <template x-for="modifier in modalData.modifiers">
+                                <li>
+                                    <p class="px-2 py-1 rounded-xl" :class="`bg-${modifier.color}-600`" x-text="modifier.title"></p>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </ul>
             </div>
         </div>
 
@@ -157,7 +116,6 @@
                     free: true,
                     music: true,
                 },
-                showResults: false,
                 showIntro: true,
                 showModal: false,
                 modalData: {
@@ -176,26 +134,6 @@
                         clearTimeout(this.timer);
                         this.timer = setTimeout(() => {
                             this.getGames();
-
-                            // Show results and animate
-                            this.showResults = true;
-
-                            if (!this.games.length > 0) {
-                                gsap.fromTo("#results", { height: "0vh" }, {
-                                    height: "40vh",
-                                    duration: 0.3,
-                                });
-                            }
-
-                            // If search is empty, animate hiding results.
-                            if (this.search == '') {
-                                gsap.fromTo("#results", { height: "40vh" }, {
-                                    height: "0vh",
-                                    duration: 0.3,
-                                }).then(() => {
-                                    this.showResults = false;
-                                });
-                            }
                         }, 500);
                     });
 
@@ -249,7 +187,7 @@
                         this.games = [];
 
                         try {
-                            const numberOfGames = 5;
+                            const numberOfGames = 18;
 
                             const response = await fetch(`/api/steam/search/${this.search}?limit=${numberOfGames * 2}`);
 
@@ -277,10 +215,11 @@
 
                                 // Animate element
                                 Alpine.nextTick(() => {
-                                    gsap.fromTo(`#game${item.id}`, { opacity: 0 }, {
+                                    gsap.fromTo(`#game${item.steam_app_id}`, { opacity: 0 }, {
                                         duration: 0.5,
                                         ease: "sine.in",
                                         opacity: 1,
+                                        delay: 0.5,
                                     });
                                 });
                             }
@@ -353,7 +292,7 @@
 
                 infoModal() {
                     var modal = document.querySelector('#modal');
-                    var wrapper = document.querySelector('#search-wrapper');
+                    var wrapper = document.querySelector('#results');
 
 
                     function moveModal(e) {
@@ -362,8 +301,8 @@
 
                         TweenLite.to(modal, 0.3, {
                             css: {
-                                left: mouseX - 320,
-                                    top: mouseY - 480
+                                left: mouseX,
+                                    top: mouseY
                             }
                         });
                     }
