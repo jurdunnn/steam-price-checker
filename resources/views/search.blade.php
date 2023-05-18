@@ -291,32 +291,27 @@
                 },
 
                 infoModal() {
-                    var modal = document.querySelector('#modal');
-                    var wrapper = document.querySelector('#results');
-
+                    const modal = document.querySelector('#modal');
+                    const wrapper = document.querySelector('#results');
 
                     function moveModal(e) {
-                        var mouseX = e.pageX;
-                        var mouseY = e.pageY;
+                        const mouseX = e.pageX;
+                        const mouseY = e.pageY;
+                        const windowWidth = window.innerWidth;
+                        const modalWidth = modal.offsetWidth;
+                        const modalOffsetX = mouseX + 20 + modalWidth > windowWidth ? mouseX - modalWidth - 20 : mouseX + 20;
 
-                        TweenLite.to(modal, 0.3, {
-                            css: {
-                                left: mouseX,
-                                    top: mouseY
-                            }
-                        });
+                        TweenLite.to(modal, 0.3, { left: modalOffsetX, top: mouseY + 20 });
                     }
 
-                    var flag = false;
-                    wrapper.addEventListener('mouseover', function() {
-                        flag = true;
+                    wrapper.addEventListener('mouseenter', function() {
                         TweenLite.to(modal, 0.4, { scale: 1, autoAlpha: 1 });
                         wrapper.addEventListener('mousemove', moveModal);
                     });
 
-                    wrapper.addEventListener('mouseout', function() {
-                        flag = false;
+                    wrapper.addEventListener('mouseleave', function() {
                         TweenLite.to(modal, 0.4, { scale: 0.1, autoAlpha: 0 });
+                        wrapper.removeEventListener('mousemove', moveModal);
                     });
                 }
             }));
