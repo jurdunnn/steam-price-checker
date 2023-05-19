@@ -218,6 +218,8 @@
                                         })
                                     });
 
+                                    console.log(`Game ${game.steam_app_id} has errors: ${item.errors}`);
+
                                     continue;
                                 }
 

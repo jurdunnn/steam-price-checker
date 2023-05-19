@@ -79,7 +79,7 @@ class Game extends Model
         return $this->image()->first()->image_url ?? null;
     }
 
-    private function doesNotHaveRequiredData(): bool
+    public function doesNotHaveRequiredData(): bool
     {
         return !$this->image()->first()
             || !$this->modifiers->where('type', ModifierType::PLATFORM)->count()

@@ -33,16 +33,14 @@ class SearchController extends Controller
             ->with('metas')
             ->first();
 
-        // If an option is false, add where clause to remove it.
-        // We do not want to add the were clause for true, as these filters
-        // are for filtering out, not limiting to.
-
-        if (!$game->image()->first()) {
+        // Do not pass game to view if it does not have all required data
+        if ($game->doesNotHaveRequiredData()) {
             return [
-                'errors' => 'No Image',
+                'errors' => 'Missing Data',
             ];
         }
 
+        // Do not pass game to view if game matches a filter.
         $options = array_filter($options, fn ($option) => $option == false);
 
         foreach ($options as $option => $value) {
