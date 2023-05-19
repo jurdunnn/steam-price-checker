@@ -37,6 +37,12 @@ class SearchController extends Controller
         // We do not want to add the were clause for true, as these filters
         // are for filtering out, not limiting to.
 
+        if (!$game->image()->first()) {
+            return [
+                'errors' => 'No Image',
+            ];
+        }
+
         $options = array_filter($options, fn ($option) => $option == false);
 
         foreach ($options as $option => $value) {
