@@ -54,7 +54,7 @@ class Game extends Model
         ];
     }
 
-    public function image(): HasOne
+    public function images(): HasOne
     {
         return $this->hasOne(GameImage::class);
     }
@@ -76,27 +76,30 @@ class Game extends Model
 
     public function getImageAttribute(): ?string
     {
-        return $this->image()->first()->image_url ?? null;
+        return $this->images()->first()->image_url ?? null;
     }
 
     public function doesNotHaveRequiredData(): bool
     {
-        return !$this->image()->first()
+        return (!$this->images()->first()
             || !$this->modifiers->where('type', ModifierType::PLATFORM)->count()
             || !$this->modifiers->where('type', ModifierType::METACRITIC)->count()
             || $this->metas->type === null
             || $this->metas->unreleased === null
-            || $this->metas->free === null;
+            || $this->metas->free === null
+        );
     }
 
     private function addImageIfMissing(array $data): void
     {
         $image = $data['header_image'] ?? null;
+        $backgroundImage = $data['background'] ?? null;
 
-        if (!$this->image()->exists()) {
-            $this->image()->create([
+        if (!$this->images()->exists() || (!$this->images->image_url || !$this->images->background_image)) {
+            $this->images()->create([
                 'game_id' => $this->id,
                 'image_url' => $image,
+                'background_image' => $backgroundImage,
             ]);
         }
     }

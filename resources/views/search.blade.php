@@ -28,15 +28,15 @@
                 <ul id="results" class="min-w-full min-h-full py-1 mt-2 text-white grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     <template x-for="game in games" :key="game.steam_app_id">
                         <li x-on:mouseover="modalData = game" class="flex flex-row flex-grow overflow-hidden cursor-pointer duration-300 ease-in-out hover:scale-105 max-h-32" :id="`game${game.steam_app_id}`" style="opacity: 0">
-                            <img x-show="game.image != null" x-bind:src="game.image.image_url" class="object-contain w-full" />
+                            <img x-show="game.images != null" x-bind:src="game.images.image_url" class="object-contain w-full" />
                         </li>
                     </template>
 
-                    <div id="modal" class="absolute w-[400px] px-2 py-4 bg-[#16253B]/90 backdrop-brightness-200 backdrop-blur-3xl rounded-md" style="opacity: 0">
-                        <ul class="flex flex-col px-4 gap-y-4">
+                    <div id="modal" class="absolute px-2 py-4 rounded-md bg-[#16253B]/90 backdrop-brightness-200 backdrop-blur-3xl bg-cover" style="opacity: 0;" :class="modalData.images != null ? 'bg-opacity-90' : ''" :style="modalData.images != null ? `background-image: url(${modalData.images.background_image})` : ''">
+                        <ul class="flex flex-col px-2 gap-y-2">
                             <template x-for="modifier in modalData.modifiers">
                                 <li>
-                                    <p class="px-2 py-1 rounded-xl" :class="`bg-${modifier.color}-600`" x-text="modifier.title"></p>
+                                    <p class="px-2 py-1 text-xs font-bold" :class="modifier.color == 'gray' ? `text-white` : `text-${modifier.color}-600`" x-text="modifier.title"></p>
                                 </li>
                             </template>
                         </ul>
@@ -217,8 +217,6 @@
                                             duration: 0.6,
                                         })
                                     });
-
-                                    console.log(`Game ${game.steam_app_id} has errors: ${item.errors}`);
 
                                     continue;
                                 }

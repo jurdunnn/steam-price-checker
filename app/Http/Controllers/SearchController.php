@@ -28,7 +28,8 @@ class SearchController extends Controller
 
         $options = json_decode($options, true);
 
-        $game = Game::where('id', $id)->with('image')
+        $game = Game::where('id', $id)
+            ->with('images')
             ->with('modifiers')
             ->with('metas')
             ->first();
