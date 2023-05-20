@@ -32,17 +32,12 @@ class Game extends Model
 
                 $data = $steam->getGameInfoFromSteam($game->steam_app_id);
 
-                // Delete game if no data was retrieved
-                if ($data == null) {
-                    $game->delete();
-
-                    return;
+                if ($data != null) {
+                    $game->metas->addMetas($data);
+                    $game->addImageIfMissing($data);
+                    $game->addPlatformModifier($data);
+                    $game->addMetacriticScore($data);
                 }
-
-                $game->metas->addMetas($data);
-                $game->addImageIfMissing($data);
-                $game->addPlatformModifier($data);
-                $game->addMetacriticScore($data);
             }
         });
     }
