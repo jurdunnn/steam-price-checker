@@ -28,7 +28,9 @@
                 <ul id="results" class="min-w-full min-h-full py-1 mt-2 text-white grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     <template x-for="game in games" :key="game.steam_app_id">
                         <li x-on:mouseover="modalData = game" class="flex flex-row flex-grow overflow-hidden cursor-pointer duration-300 ease-in-out hover:scale-105 max-h-32" :id="`game${game.steam_app_id}`" style="opacity: 0">
-                            <img x-show="game.images != null" x-bind:src="game.images.image_url" class="object-contain w-full" />
+                            <a :href="`https://store.steampowered.com/app/${game.steam_app_id}`" target="_blank">
+                                <img x-show="game.images != null" x-bind:src="game.images.image_url" class="object-contain w-full" />
+                            </a>
                         </li>
                     </template>
 
