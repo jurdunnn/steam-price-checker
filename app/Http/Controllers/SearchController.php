@@ -30,7 +30,9 @@ class SearchController extends Controller
 
         $game = Game::where('id', $id)
             ->with('images')
-            ->with('modifiers')
+            ->with('modifiers', function ($query) {
+                return $query->orderBy('strength', 'DESC');
+            })
             ->with('metas')
             ->first();
 
