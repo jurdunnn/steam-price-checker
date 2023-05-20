@@ -49,19 +49,19 @@ class SearchController extends Controller
         foreach ($options as $option => $value) {
             if ($game->metas->type == $option) {
                 return [
-                    'errors' => 'Filtered Out',
+                    'options' => 'Filtered Out',
                 ];
             }
 
             if ($option == 'free' && $game->metas->free == 1) {
                 return [
-                    'errors' => 'Filtered Out',
+                    'options' => 'Filtered Out',
                 ];
             }
 
             if ($option == 'unreleased' && $game->metas->unreleased == 1) {
                 return [
-                    'errors' => 'Filtered Out',
+                    'options' => 'Filtered Out',
                 ];
             }
         }

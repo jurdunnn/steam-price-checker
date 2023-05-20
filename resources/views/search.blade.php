@@ -221,6 +221,10 @@
                                     continue;
                                 }
 
+                                if (item.options) {
+                                    continue;
+                                }
+
                                 this.games.push(item);
 
                                 // Animate element
