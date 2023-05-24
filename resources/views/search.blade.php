@@ -210,16 +210,6 @@
                                 this.loadProgress += 100 / numberOfGames;
 
                                 if (item.errors) {
-                                    gsap.fromTo(".loading", { "background-color": "#2366ED" }, {
-                                        "background-color": "red",
-                                        duration: 0.6,
-                                    }).then(() => {
-                                        gsap.fromTo(".loading", { "background-color": "red" }, {
-                                            "background-color": "#2366ED",
-                                            duration: 0.6,
-                                        })
-                                    });
-
                                     continue;
                                 }
 
