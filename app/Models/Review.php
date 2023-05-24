@@ -9,6 +9,8 @@ class Review extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function game()
     {
         return $this->belongsTo(Game::class);

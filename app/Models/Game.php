@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enums\ModifierType;
 use App\Services\SteamService;
-use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -23,20 +22,19 @@ class Game extends Model
     protected static function booted()
     {
         static::retrieved(function ($game) {
-            $steam = new SteamService;
-
             if (!$game->metas()->first()) {
                 $game->metas()->create();
             }
 
             if ($game->doesNotHaveRequiredData()) {
-                $data = $steam->getGameInfoFromSteam($game->steam_app_id);
+                $data = $game->steam()->getGameInfoFromSteam($game->steam_app_id);
 
                 if ($data != null) {
                     $game->metas->addMetas($data);
                     $game->addImageIfMissing($data);
                     $game->addPlatformModifier($data);
                     $game->addMetacriticScore($data);
+                    $game->addReviews();
                 }
             }
         });
@@ -87,6 +85,7 @@ class Game extends Model
             || $this->metas->type === null
             || $this->metas->unreleased === null
             || $this->metas->free === null
+            || !$this->reviews()->first()
         );
     }
 
@@ -154,6 +153,26 @@ class Game extends Model
                 ]);
                 break;
         }
+    }
+
+    private function addReviews(): void
+    {
+        if ($this->reviews()->first()) {
+            return;
+        }
+
+        $data = $this->steam()->getReviews($this->steam_app_id)['query_summary'];
+
+        $this->reviews()->create([
+            'total_positive' => $data['total_positive'],
+            'total_negative' => $data['total_negative'],
+            'total_reviews' => $data['total_reviews'],
+        ]);
+    }
+
+    private function steam(): SteamService
+    {
+        return new SteamService;
     }
 
     private function addMetacriticScore(array $data)
