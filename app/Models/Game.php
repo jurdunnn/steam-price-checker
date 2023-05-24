@@ -79,13 +79,13 @@ class Game extends Model
 
     public function doesNotHaveRequiredData(): bool
     {
-        return (!$this->images()->first()
+        return ($this->images()->doesntExist()
             || !$this->modifiers->where('type', ModifierType::PLATFORM)->count()
             || !$this->modifiers->where('type', ModifierType::METACRITIC)->count()
             || $this->metas->type === null
             || $this->metas->unreleased === null
             || $this->metas->free === null
-            || !$this->reviews()->first()
+            || $this->reviews()->doesntExist()
         );
     }
 
@@ -157,7 +157,7 @@ class Game extends Model
 
     private function addReviews(): void
     {
-        if ($this->reviews()->first()) {
+        if ($this->reviews()->exists()) {
             return;
         }
 
