@@ -23,13 +23,13 @@ class Game extends Model
     protected static function booted()
     {
         static::retrieved(function ($game) {
+            $steam = new SteamService;
+
             if (!$game->metas()->first()) {
                 $game->metas()->create();
             }
 
             if ($game->doesNotHaveRequiredData()) {
-                $steam = new SteamService;
-
                 $data = $steam->getGameInfoFromSteam($game->steam_app_id);
 
                 if ($data != null) {
@@ -47,6 +47,11 @@ class Game extends Model
         return [
             'title' => $this->title,
         ];
+    }
+
+    public function reviews(): HasOne
+    {
+        return $this->hasOne(Review::class);
     }
 
     public function images(): HasOne
