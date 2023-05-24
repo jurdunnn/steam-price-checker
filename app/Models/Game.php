@@ -168,6 +168,29 @@ class Game extends Model
             'total_negative' => $data['total_negative'],
             'total_reviews' => $data['total_reviews'],
         ]);
+
+        if ($this->modifiers()
+            ->where('type', ModifierType::REVIEW_DIST)
+            ->exists()
+        ) {
+            return;
+        }
+
+        if ($this->reviews->total_positive > $this->reviews->total_negative) {
+            $this->modifiers()->create([
+                'title' => 'Positive Review Distribution',
+                'type' => ModifierType::REVIEW_DIST,
+                'color' => 'green',
+                'strength' => 10
+            ]);
+        } else {
+            $this->modifiers()->create([
+                'title' => 'Poor Review Distribution',
+                'type' => ModifierType::REVIEW_DIST,
+                'color' => 'red',
+                'strength' => 10
+            ]);
+        }
     }
 
     private function steam(): SteamService
