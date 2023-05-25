@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\AverageType;
 use App\Enums\ModifierType;
+use App\Services\AveragesService;
 use App\Services\SteamService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -188,6 +190,45 @@ class Game extends Model
                 'title' => 'Poor Review Distribution',
                 'type' => ModifierType::REVIEW_DIST,
                 'color' => 'red',
+                'strength' => 10
+            ]);
+        }
+
+        // Calculate Average Reviews
+        $averages = resolve(AveragesService::class);
+
+        $averages->calculateAverage(AverageType::REVIEW_POSITIVE, 'reviews', 'total_positive');
+
+        $averages->calculateAverage(AverageType::REVIEW_POOR, 'reviews', 'total_negative');
+
+        if ($this->reviews->total_positive > $this->reviews->getAverage(AverageType::REVIEW_POSITIVE)) {
+            $this->modifiers()->create([
+                'title' => 'Above Average Total Positive Reviews',
+                'type' => ModifierType::AVERAGE_POSITIVE,
+                'color' => 'green',
+                'strength' => 10
+            ]);
+        } else {
+            $this->modifiers()->create([
+                'title' => 'Below Average Total Positive Reviews',
+                'type' => ModifierType::AVERAGE_POSITIVE,
+                'color' => 'red',
+                'strength' => 10
+            ]);
+        }
+
+        if ($this->reviews->total_negative > $this->reviews->getAverage(AverageType::REVIEW_POOR)) {
+            $this->modifiers()->create([
+                'title' => 'Above Average Total Negative Reviews',
+                'type' => ModifierType::AVERAGE_NEGATIVE,
+                'color' => 'red',
+                'strength' => 10
+            ]);
+        } else {
+            $this->modifiers()->create([
+                'title' => 'Below Average Total Negative Reviews',
+                'type' => ModifierType::AVERAGE_NEGATIVE,
+                'color' => 'green',
                 'strength' => 10
             ]);
         }
