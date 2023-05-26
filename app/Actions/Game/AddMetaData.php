@@ -10,12 +10,16 @@ class AddMetaData
 {
     public function __invoke(Game $game, array $data)
     {
-        GameMeta::firstOrCreate([
-            'game_id' => $game->id,
-            'free' => $data['is_free'] ?? false,
-            'type' => $data['type'] ?? 'undefined',
-            'unreleased' => $this->isUnreleased($data) ?? false,
-        ]);
+        GameMeta::firstOrCreate(
+            [
+                'game_id' => $game->id,
+            ],
+            [
+                'free' => $data['is_free'] ?? false,
+                'type' => $data['type'] ?? 'undefined',
+                'unreleased' => $this->isUnreleased($data) ?? false,
+            ]
+        );
     }
 
     private function isUnreleased($data)
