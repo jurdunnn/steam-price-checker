@@ -70,20 +70,6 @@ class Game extends Model
         );
     }
 
-    public function addImageIfMissing(array $data): void
-    {
-        $image = $data['header_image'] ?? null;
-        $backgroundImage = $data['background'] ?? null;
-
-        if (!$this->images()->exists() || (!$this->images->image_url || !$this->images->background_image)) {
-            $this->images()->create([
-                'game_id' => $this->id,
-                'image_url' => $image,
-                'background_image' => $backgroundImage,
-            ]);
-        }
-    }
-
     public function addPlatformModifier(array $data): void
     {
         if ($this->modifiers()

@@ -19,7 +19,7 @@ class GameObserver
                 $gameDataService = new GameDataService($game, $data);
 
                 $gameDataService->addGameMetas();
-                $game->addImageIfMissing($data);
+                $gameDataService->addImages();
                 $game->addPlatformModifier($data);
                 $game->addMetacriticScore($data);
                 $game->addReviews();

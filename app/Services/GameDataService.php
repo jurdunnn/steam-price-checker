@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Actions\Game\AddImages;
 use App\Actions\Game\AddMetaData;
 use App\Models\Game;
 
@@ -17,5 +18,12 @@ class GameDataService
         $addMetaData = resolve(AddMetaData::class);
 
         $addMetaData($this->game, $this->data);
+    }
+
+    public function addImages()
+    {
+        $addImages = resolve(AddImages::class);
+
+        $addImages($this->game, $this->data);
     }
 }
