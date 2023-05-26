@@ -21,27 +21,6 @@ class Game extends Model
         'title',
     ];
 
-    protected static function booted()
-    {
-        static::retrieved(function ($game) {
-            if (!$game->metas()->first()) {
-                $game->metas()->create();
-            }
-
-            if ($game->doesNotHaveRequiredData()) {
-                $data = $game->steam()->getGameInfoFromSteam($game->steam_app_id);
-
-                if ($data != null) {
-                    $game->metas->addMetas($data);
-                    $game->addImageIfMissing($data);
-                    $game->addPlatformModifier($data);
-                    $game->addMetacriticScore($data);
-                    $game->addReviews();
-                }
-            }
-        });
-    }
-
     public function toSearchableArray()
     {
         return [
@@ -91,7 +70,7 @@ class Game extends Model
         );
     }
 
-    private function addImageIfMissing(array $data): void
+    public function addImageIfMissing(array $data): void
     {
         $image = $data['header_image'] ?? null;
         $backgroundImage = $data['background'] ?? null;
@@ -105,7 +84,7 @@ class Game extends Model
         }
     }
 
-    private function addPlatformModifier(array $data): void
+    public function addPlatformModifier(array $data): void
     {
         if ($this->modifiers()
             ->where('type', ModifierType::PLATFORM)
@@ -157,7 +136,7 @@ class Game extends Model
         }
     }
 
-    private function addReviews(): void
+    public function addReviews(): void
     {
         if ($this->reviews()->exists()) {
             return;
@@ -234,12 +213,12 @@ class Game extends Model
         }
     }
 
-    private function steam(): SteamService
+    public function steam(): SteamService
     {
         return new SteamService;
     }
 
-    private function addMetacriticScore(array $data)
+    public function addMetacriticScore(array $data)
     {
         if ($this->modifiers()
             ->where('type', ModifierType::METACRITIC)
