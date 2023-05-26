@@ -3,15 +3,15 @@
 namespace App\Actions\Game;
 
 use App\Models\Game;
+use App\Models\GameMeta;
 use Carbon\Carbon;
 
 class AddMetaData
 {
     public function __invoke(Game $game, array $data)
     {
-        $method = $game->metas->first()->exists() ? 'update' : 'create';
-
-        $game->metas->$method([
+        GameMeta::firstOrCreate([
+            'game_id' => $game->id,
             'free' => $data['is_free'] ?? false,
             'type' => $data['type'] ?? 'undefined',
             'unreleased' => $this->isUnreleased($data) ?? false,

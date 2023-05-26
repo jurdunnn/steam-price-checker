@@ -12,10 +12,6 @@ class GameObserver
      */
     public function retrieved(Game $game): void
     {
-        if (!$game->metas()->first()) {
-            $game->metas()->create();
-        }
-
         if ($game->doesNotHaveRequiredData()) {
             $data = $game->steam()->getGameInfoFromSteam($game->steam_app_id);
 
