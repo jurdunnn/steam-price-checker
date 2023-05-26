@@ -3,10 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Game;
+use App\Services\GameDataService;
 
 class GameObserver
 {
-
     /**
      * Handle the Game "retrieved" event.
      */
@@ -20,7 +20,9 @@ class GameObserver
             $data = $game->steam()->getGameInfoFromSteam($game->steam_app_id);
 
             if ($data != null) {
-                $game->metas->addMetas($data);
+                $gameDataService = new GameDataService($game, $data);
+
+                $gameDataService->addGameMetas();
                 $game->addImageIfMissing($data);
                 $game->addPlatformModifier($data);
                 $game->addMetacriticScore($data);
