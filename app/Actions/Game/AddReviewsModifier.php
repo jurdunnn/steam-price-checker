@@ -53,36 +53,40 @@ class AddReviewsModifier
 
         $averages->calculateAverage(AverageType::REVIEW_POOR, 'reviews', 'total_negative');
 
-        if ($game->reviews->total_positive > $game->reviews->getAverage(AverageType::REVIEW_POSITIVE)) {
-            $game->modifiers()->create([
-                'title' => 'Above Average Total Positive Reviews',
-                'type' => ModifierType::AVERAGE_POSITIVE,
-                'color' => 'green',
-                'strength' => 10
-            ]);
-        } else {
-            $game->modifiers()->create([
-                'title' => 'Below Average Total Positive Reviews',
-                'type' => ModifierType::AVERAGE_POSITIVE,
-                'color' => 'red',
-                'strength' => 10
-            ]);
+        if ($game->modifiers()->where('type', AverageType::REVIEW_POSITIVE)->doesntExist()) {
+            if ($game->reviews->total_positive > $game->reviews->getAverage(AverageType::REVIEW_POSITIVE)) {
+                $game->modifiers()->create([
+                    'title' => 'Above Average Total Positive Reviews',
+                    'type' => ModifierType::AVERAGE_POSITIVE,
+                    'color' => 'green',
+                    'strength' => 10
+                ]);
+            } else {
+                $game->modifiers()->create([
+                    'title' => 'Below Average Total Positive Reviews',
+                    'type' => ModifierType::AVERAGE_POSITIVE,
+                    'color' => 'red',
+                    'strength' => 10
+                ]);
+            }
         }
 
-        if ($game->reviews->total_negative > $game->reviews->getAverage(AverageType::REVIEW_POOR)) {
-            $game->modifiers()->create([
-                'title' => 'Above Average Total Negative Reviews',
-                'type' => ModifierType::AVERAGE_NEGATIVE,
-                'color' => 'red',
-                'strength' => 10
-            ]);
-        } else {
-            $game->modifiers()->create([
-                'title' => 'Below Average Total Negative Reviews',
-                'type' => ModifierType::AVERAGE_NEGATIVE,
-                'color' => 'green',
-                'strength' => 10
-            ]);
+        if ($game->modifiers()->where('type', AverageType::REVIEW_POOR)->doesntExist()) {
+            if ($game->reviews->total_negative > $game->reviews->getAverage(AverageType::REVIEW_POOR)) {
+                $game->modifiers()->create([
+                    'title' => 'Above Average Total Negative Reviews',
+                    'type' => ModifierType::AVERAGE_NEGATIVE,
+                    'color' => 'red',
+                    'strength' => 10
+                ]);
+            } else {
+                $game->modifiers()->create([
+                    'title' => 'Below Average Total Negative Reviews',
+                    'type' => ModifierType::AVERAGE_NEGATIVE,
+                    'color' => 'green',
+                    'strength' => 10
+                ]);
+            }
         }
     }
 }
