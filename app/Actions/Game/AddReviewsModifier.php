@@ -5,6 +5,7 @@ namespace App\Actions\Game;
 use App\Enums\AverageType;
 use App\Enums\ModifierType;
 use App\Models\Game;
+use App\Models\Modifier;
 use App\Services\AveragesService;
 
 class AddReviewsModifier
@@ -23,70 +24,31 @@ class AddReviewsModifier
             'total_reviews' => $data['total_reviews'],
         ]);
 
-        if ($game->modifiers()
-            ->where('type', ModifierType::REVIEW_DIST)
-            ->exists()
-        ) {
-            return;
-        }
+        Modifier::create($game, ModifierType::REVIEW_DIST, [
+            'positive' => 'Positive Review Distribution',
+            'negative' => 'Poor Review Distribution',
+        ], function () use ($game) {
+            return $game->reviews->total_positive > $game->reviews->total_negative;
+        });
 
-        if ($game->reviews->total_positive > $game->reviews->total_negative) {
-            $game->modifiers()->create([
-                'title' => 'Positive Review Distribution',
-                'type' => ModifierType::REVIEW_DIST,
-                'color' => 'green',
-                'strength' => 10
-            ]);
-        } else {
-            $game->modifiers()->create([
-                'title' => 'Poor Review Distribution',
-                'type' => ModifierType::REVIEW_DIST,
-                'color' => 'red',
-                'strength' => 10
-            ]);
-        }
-
-        // Calculate Average Reviews
         $averages = resolve(AveragesService::class);
 
         $averages->calculateAverage(AverageType::REVIEW_POSITIVE, 'reviews', 'total_positive');
 
         $averages->calculateAverage(AverageType::REVIEW_POOR, 'reviews', 'total_negative');
 
-        if ($game->modifiers()->where('type', AverageType::REVIEW_POSITIVE)->doesntExist()) {
-            if ($game->reviews->total_positive > $game->reviews->getAverage(AverageType::REVIEW_POSITIVE)) {
-                $game->modifiers()->create([
-                    'title' => 'Above Average Total Positive Reviews',
-                    'type' => ModifierType::AVERAGE_POSITIVE,
-                    'color' => 'green',
-                    'strength' => 10
-                ]);
-            } else {
-                $game->modifiers()->create([
-                    'title' => 'Below Average Total Positive Reviews',
-                    'type' => ModifierType::AVERAGE_POSITIVE,
-                    'color' => 'red',
-                    'strength' => 10
-                ]);
-            }
-        }
+        Modifier::create($game, ModifierType::AVERAGE_POSITIVE, [
+            'positive' => 'Above Average Total Positive Reviews',
+            'negative' => 'Below Average Total Positive Reviews',
+        ], function () use ($game) {
+            return $game->reviews->total_positive > $game->reviews->getAverage(AverageType::REVIEW_POSITIVE);
+        });
 
-        if ($game->modifiers()->where('type', AverageType::REVIEW_POOR)->doesntExist()) {
-            if ($game->reviews->total_negative > $game->reviews->getAverage(AverageType::REVIEW_POOR)) {
-                $game->modifiers()->create([
-                    'title' => 'Above Average Total Negative Reviews',
-                    'type' => ModifierType::AVERAGE_NEGATIVE,
-                    'color' => 'red',
-                    'strength' => 10
-                ]);
-            } else {
-                $game->modifiers()->create([
-                    'title' => 'Below Average Total Negative Reviews',
-                    'type' => ModifierType::AVERAGE_NEGATIVE,
-                    'color' => 'green',
-                    'strength' => 10
-                ]);
-            }
-        }
+        Modifier::create($game, ModifierType::AVERAGE_NEGATIVE, [
+            'positive' => 'Below Average Total Negative Reviews',
+            'negative' => 'Above Average Total Negative Reviews',
+        ], function () use ($game) {
+            return $game->reviews->total_negative > $game->reviews->getAverage(AverageType::REVIEW_POOR);
+        });
     }
 }
