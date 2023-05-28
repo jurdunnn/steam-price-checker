@@ -70,58 +70,6 @@ class Game extends Model
         );
     }
 
-    public function addPlatformModifier(array $data): void
-    {
-        if ($this->modifiers()
-            ->where('type', ModifierType::PLATFORM)
-            ->exists()
-        ) {
-            return;
-        }
-
-        $platforms = $data['platforms'] ?? null;
-
-        if (!$platforms) {
-            $this->modifiers()->firstOrCreate([
-                'title' => 'No Platform Information',
-                'type' => ModifierType::PLATFORM,
-                'color' => 'gray',
-                'strength' => 0
-            ]);
-
-            return;
-        }
-
-        $platforms = array_filter($platforms, fn ($platform) => $platform != false);
-
-        switch (sizeof($platforms)) {
-            case 1:
-                $this->modifiers()->firstOrCreate([
-                    'title' => 'Few Supported Platforms',
-                    'type' => ModifierType::PLATFORM,
-                    'color' => 'red',
-                    'strength' => -10
-                ]);
-                break;
-            case 2:
-                $this->modifiers()->firstOrCreate([
-                    'title' => 'Average Number of Platforms Supported',
-                    'type' => ModifierType::PLATFORM,
-                    'color' => 'gray',
-                    'strength' => 0
-                ]);
-                break;
-            case 3:
-                $this->modifiers()->firstOrCreate([
-                    'title' => 'Many Supported Platforms',
-                    'type' => ModifierType::PLATFORM,
-                    'color' => 'green',
-                    'strength' => 10
-                ]);
-                break;
-        }
-    }
-
     public function addReviews(): void
     {
         if ($this->reviews()->exists()) {

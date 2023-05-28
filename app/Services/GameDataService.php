@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Actions\Game\AddImages;
 use App\Actions\Game\AddMetaData;
+use App\Actions\Game\AddPlatformModifier;
 use App\Models\Game;
 
 class GameDataService
@@ -25,5 +26,12 @@ class GameDataService
         $addImages = resolve(AddImages::class);
 
         $addImages($this->game, $this->data);
+    }
+
+    public function addPlatformModifier()
+    {
+        $addPlatformModifier = resolve(AddPlatformModifier::class);
+
+        $addPlatformModifier($this->game, $this->data);
     }
 }
