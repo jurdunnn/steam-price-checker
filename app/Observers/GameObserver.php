@@ -22,7 +22,7 @@ class GameObserver
                 $gameDataService->addImages();
                 $gameDataService->addPlatformModifier();
                 $gameDataService->addMetacriticModifier();
-                $game->addReviews();
+                $gameDataService->addReviewsModifier();
             }
         }
     }

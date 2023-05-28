@@ -6,6 +6,7 @@ use App\Actions\Game\AddImages;
 use App\Actions\Game\AddMetacriticModifier;
 use App\Actions\Game\AddMetaData;
 use App\Actions\Game\AddPlatformModifier;
+use App\Actions\Game\AddReviewsModifier;
 use App\Models\Game;
 
 class GameDataService
@@ -41,5 +42,12 @@ class GameDataService
         $addMetacriticModifier = resolve(AddMetacriticModifier::class);
 
         $addMetacriticModifier($this->game, $this->data);
+    }
+
+    public function addReviewsModifier()
+    {
+        $addReviewsModifier = resolve(AddReviewsModifier::class);
+
+        $addReviewsModifier($this->game, $this->data);
     }
 }
