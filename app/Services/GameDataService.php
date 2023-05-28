@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Actions\Game\AddImages;
+use App\Actions\Game\AddMetacriticModifier;
 use App\Actions\Game\AddMetaData;
 use App\Actions\Game\AddPlatformModifier;
 use App\Models\Game;
@@ -33,5 +34,12 @@ class GameDataService
         $addPlatformModifier = resolve(AddPlatformModifier::class);
 
         $addPlatformModifier($this->game, $this->data);
+    }
+
+    public function addMetacriticModifier()
+    {
+        $addMetacriticModifier = resolve(AddMetacriticModifier::class);
+
+        $addMetacriticModifier($this->game, $this->data);
     }
 }

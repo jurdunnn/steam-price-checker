@@ -21,7 +21,7 @@ class GameObserver
                 $gameDataService->addGameMetas();
                 $gameDataService->addImages();
                 $gameDataService->addPlatformModifier();
-                $game->addMetacriticScore($data);
+                $gameDataService->addMetacriticModifier();
                 $game->addReviews();
             }
         }
