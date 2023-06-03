@@ -16,7 +16,7 @@ class AddPlatformModifier
             'positive' => 'Many Platforms Supported',
             'neutral' => 'No Platform Information',
             'negative' => 'Few Platforms Supported',
-        ], function () use ($game, $platforms) {
+        ], function () use ($platforms) {
             if ($platforms) {
                 $platforms = array_filter($platforms, fn ($platform) => $platform != false);
 
