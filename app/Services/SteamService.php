@@ -38,6 +38,24 @@ class SteamService
 
         $url = $queryString ? "$url&$queryString" : $url;
 
-        return json_decode(Http::get("https://store.steampowered.com/appreviews/$appid?json=1"), true);
+        return json_decode(Http::get($url), true);
+    }
+
+    /**
+     * Retrieves news for a specific app from the Steam API.
+     *
+     * @param int $appid The ID of the app for which to retrieve news.
+     * @param array $options Additional options for the news request (optional).
+     * @return array|null An array containing the news information or null if the request fails.
+     */
+    public function getNews($appid, array $options = []): ?array
+    {
+        $queryString = http_build_query($options, '', '&');
+
+        $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2?appid=$appid";
+
+        $url = $queryString ? "$url&$queryString" : $url;
+
+        return json_decode(Http::get($url), true);
     }
 }
